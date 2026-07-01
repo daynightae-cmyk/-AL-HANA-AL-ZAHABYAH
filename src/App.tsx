@@ -16,7 +16,7 @@ import { ServiceDetailPage } from './pages/ServiceDetail';
 import { ProjectsPage } from './pages/Projects';
 import { BeforeAfterPage } from './pages/BeforeAfter';
 import { RequestQuotePage } from './pages/RequestQuote';
-import { TrackProjectPage } from './pages/TrackProject';
+import { TrackProjectPage } from './pages/TrackProjectV2';
 import { ContactPage } from './pages/Contact';
 import { FAQsPage } from './pages/FAQs';
 import { BlogPage } from './pages/Blog';
