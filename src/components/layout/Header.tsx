@@ -242,7 +242,11 @@ export const Header: React.FC = () => {
               aria-label="Open menu"
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
-              className="p-2 text-[#D6D6D6] hover:text-luxury-gold border border-white/10 cursor-pointer"
+              className={`p-2 cursor-pointer border transition-all duration-200 ${
+                theme === 'light'
+                  ? 'text-neutral-800 hover:text-luxury-gold border-black/10 hover:border-luxury-gold/30'
+                  : 'text-[#D6D6D6] hover:text-luxury-gold border-white/10 hover:border-luxury-gold/20'
+              }`}
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>

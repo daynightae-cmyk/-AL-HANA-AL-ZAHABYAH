@@ -43,14 +43,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.02) translate3d(0, 0, 0);
+  transform: scale(1.0) translate3d(0, 0, 0);
   transition: transform 7000ms cubic-bezier(0.1, 0.8, 0.3, 1),
               opacity 1400ms cubic-bezier(0.25, 1, 0.5, 1);
   backface-visibility: hidden;
 }
 
 .hero-slide-active .cinematic-hero__image {
-  transform: scale(1.08) translate3d(5px, -3px, 0);
+  transform: scale(1.04) translate3d(0, 0, 0);
 }
 
 /* Layered Overlays for Ultimate Luxury Depth */
@@ -61,56 +61,59 @@
   z-index: 2;
 }
 
-/* 1. Left dark gradient for text readability (preserving the empty space on left and details on right) */
+/* 1. Dark gradient for text readability (keeping other side clear to make the image shine) */
 .cinematic-hero__overlay--gradient-ltr {
   background: linear-gradient(90deg, 
-    rgba(5, 5, 5, 0.96) 0%, 
-    rgba(5, 5, 5, 0.90) 35%, 
-    rgba(5, 5, 5, 0.60) 60%, 
-    rgba(5, 5, 5, 0.15) 100%
+    rgba(0, 0, 0, 0.40) 0%, 
+    rgba(0, 0, 0, 0.25) 35%, 
+    rgba(0, 0, 0, 0.05) 65%, 
+    rgba(0, 0, 0, 0.0) 90%
   );
 }
 
-/* For Arabic, we still keep the text on the left but aligned right, or let's support RTL gradient if needed */
 .cinematic-hero__overlay--gradient-rtl {
-  /* Since main visual focus is on the right, keeping text block on left is highly recommended to prevent covering design. */
-  /* So we keep the same left gradient to protect text on the left even when dir="rtl" is set! */
-  background: linear-gradient(90deg, 
-    rgba(5, 5, 5, 0.96) 0%, 
-    rgba(5, 5, 5, 0.90) 35%, 
-    rgba(5, 5, 5, 0.60) 60%, 
-    rgba(5, 5, 5, 0.15) 100%
+  /* In RTL (Arabic), text is on the right, so make right side darker and left side completely clear! */
+  background: linear-gradient(270deg, 
+    rgba(0, 0, 0, 0.40) 0%, 
+    rgba(0, 0, 0, 0.25) 35%, 
+    rgba(0, 0, 0, 0.05) 65%, 
+    rgba(0, 0, 0, 0.0) 90%
   );
 }
 
-/* Mobile Overlay - needs to be much darker and more uniform because layout changes on smaller screens */
+/* Mobile Overlay - vertical gradient from top to bottom, keeping upper image focus clear */
 @media (max-width: 1024px) {
   .cinematic-hero__overlay--gradient-ltr,
   .cinematic-hero__overlay--gradient-rtl {
     background: linear-gradient(180deg, 
-      rgba(5, 5, 5, 0.92) 0%, 
-      rgba(5, 5, 5, 0.85) 50%, 
-      rgba(5, 5, 5, 0.94) 100%
+      rgba(0, 0, 0, 0.10) 0%, 
+      rgba(0, 0, 0, 0.30) 45%, 
+      rgba(0, 0, 0, 0.60) 100%
     );
   }
 }
 
-/* 2. Top and bottom cinematic vignette */
+/* 2. Top and bottom cinematic vignette - no side radial darkness, making left/right extremely clear and vibrant! */
 .cinematic-hero__overlay--vignette {
-  background: radial-gradient(circle, transparent 20%, rgba(5, 5, 5, 0.3) 70%, rgba(5, 5, 5, 0.85) 100%);
+  background: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 0.15) 0%, 
+    transparent 20%, 
+    transparent 80%, 
+    rgba(0, 0, 0, 0.20) 100%
+  );
 }
 
-/* 3. Soft gold radial glow on left behind CTA to enrich luxury look */
+/* 3. Soft gold radial glow behind CTA to enrich luxury look */
 .cinematic-hero__overlay--gold-glow {
-  background: radial-gradient(circle 450px at 20% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 100%);
+  background: radial-gradient(circle 450px at 20% 50%, rgba(212, 175, 55, 0.01) 0%, transparent 100%);
 }
 
-/* 4. Fine architectural grid overlay */
+/* 4. Fine architectural grid overlay - made extremely subtle so it doesn't blur the details */
 .cinematic-hero__overlay--grid {
-  background-image: linear-gradient(to right, rgba(212, 175, 55, 0.02) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(212, 175, 55, 0.02) 1px, transparent 1px);
-  background-size: 40px 40px;
-  opacity: 0.8;
+  background-image: linear-gradient(to right, rgba(212, 175, 55, 0.003) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(212, 175, 55, 0.003) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.04;
 }
 
 /* Content block styles & container alignment */
@@ -179,6 +182,15 @@
   opacity: 1;
   transform: translateY(0);
   transition-delay: 800ms;
+}
+
+/* Individual styling for title and subtitle to maximize legibility over highly clear and vibrant image backgrounds */
+.cinematic-hero__title {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65), 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.cinematic-hero__subtitle {
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
 /* Gold light sweep reveal effect */
@@ -403,14 +415,21 @@
 }
 
 /* High contrast modifications when browser theme is light */
-html.light .cinematic-hero__overlay--gradient-ltr,
-html.light .cinematic-hero__overlay--gradient-rtl {
-  /* We still keep deep dark gradients for high contrast text readability on top of image background */
+html.light .cinematic-hero__overlay--gradient-ltr {
   background: linear-gradient(90deg, 
-    rgba(5, 5, 5, 0.98) 0%, 
-    rgba(5, 5, 5, 0.92) 35%, 
-    rgba(5, 5, 5, 0.65) 60%, 
-    rgba(5, 5, 5, 0.20) 100%
+    rgba(0, 0, 0, 0.35) 0%, 
+    rgba(0, 0, 0, 0.20) 35%, 
+    rgba(0, 0, 0, 0.05) 65%, 
+    rgba(0, 0, 0, 0.0) 90%
+  );
+}
+
+html.light .cinematic-hero__overlay--gradient-rtl {
+  background: linear-gradient(270deg, 
+    rgba(0, 0, 0, 0.35) 0%, 
+    rgba(0, 0, 0, 0.20) 35%, 
+    rgba(0, 0, 0, 0.05) 65%, 
+    rgba(0, 0, 0, 0.0) 90%
   );
 }
 
@@ -418,9 +437,9 @@ html.light .cinematic-hero__overlay--gradient-rtl {
   html.light .cinematic-hero__overlay--gradient-ltr,
   html.light .cinematic-hero__overlay--gradient-rtl {
     background: linear-gradient(180deg, 
-      rgba(5, 5, 5, 0.96) 0%, 
-      rgba(5, 5, 5, 0.88) 50%, 
-      rgba(5, 5, 5, 0.96) 100%
+      rgba(0, 0, 0, 0.08) 0%, 
+      rgba(0, 0, 0, 0.20) 45%, 
+      rgba(0, 0, 0, 0.50) 100%
     );
   }
 }
