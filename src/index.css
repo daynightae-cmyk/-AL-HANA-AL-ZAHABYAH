@@ -1,9 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-luxury-gold: #D4AF37;
+  --color-luxury-gold-dark: #A97924;
+  --color-luxury-offwhite: #F8F5ED;
+  --color-luxury-bg: #050505;
+  --color-luxury-text: #D6D6D6;
+  --color-luxury-muted: #8B8B8B;
+}
+
+/* Base style resets */
+body {
+  background-color: #050505;
+  color: #D6D6D6;
+  font-family: var(--font-sans);
 }
 
 /* Micro animations */
@@ -22,10 +37,307 @@
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Atmospheric Background Glows */
+.luxury-glow-top {
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: rgba(212, 175, 55, 0.08);
+  border-radius: 9999px;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.luxury-glow-bottom {
+  position: absolute;
+  bottom: -10%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  background: rgba(169, 121, 36, 0.08);
+  border-radius: 9999px;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* Glassmorphism custom accents */
 .glass-panel {
   background: rgba(10, 10, 10, 0.75);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.1);
 }
+
+/* Immersive Card style */
+.luxury-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+}
+
+.luxury-card:hover {
+  border-color: rgba(212, 175, 55, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.luxury-card-active {
+  background: #111111;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.03);
+}
+
+/* Luxurious Day Mode (Light Theme) Overrides */
+html.light body {
+  background-color: #F8F5ED; /* luxury off-white/ivory */
+  color: #1A1A1A; /* charcoal text */
+}
+
+/* Beautiful warm, subtle ivory to beige gradients for light mode, protecting gold CTA buttons */
+html.light .bg-gradient-to-b:not(.from-luxury-gold):not(.from-amber-500),
+html.light [class*="bg-gradient-to-b"]:not([class*="from-luxury-gold"]):not([class*="from-amber-500"]) {
+  background-image: linear-gradient(to bottom, #F8F5ED, #EFECE6) !important;
+}
+
+html.light .bg-gradient-to-r:not(.from-luxury-gold):not(.from-amber-500),
+html.light [class*="bg-gradient-to-r"]:not([class*="from-luxury-gold"]):not([class*="from-amber-500"]) {
+  background-image: linear-gradient(to right, #F8F5ED, #EFECE6) !important;
+}
+
+html.light .bg-gradient-to-br:not(.from-luxury-gold):not(.from-amber-500):not(.from-luxury-gold\/10),
+html.light [class*="bg-gradient-to-br"]:not([class*="from-luxury-gold"]):not([class*="from-amber-500"]):not([class*="from-luxury-gold/10"]) {
+  background-image: linear-gradient(to bottom right, #F8F5ED, #EFECE6) !important;
+}
+
+html.light .bg-gradient-to-tr:not(.from-luxury-gold):not(.from-amber-500),
+html.light [class*="bg-gradient-to-tr"]:not([class*="from-luxury-gold"]):not([class*="from-amber-500"]) {
+  background-image: linear-gradient(to top right, #F8F5ED, #EFECE6) !important;
+}
+
+/* Headings with Hover Protection */
+html.light h1:not(:hover),
+html.light h2:not(:hover),
+html.light h3:not(:hover),
+html.light h4:not(:hover),
+html.light h5:not(:hover),
+html.light h6:not(:hover) {
+  color: #1A1A1A !important;
+}
+
+/* Body and List Text with Hover Protection */
+html.light p:not(:hover),
+html.light li:not(:hover) {
+  color: #444444 !important;
+}
+
+/* Ultra Light / Off-White Text to Dark Charcoal conversion (supporting custom hexes like #F8F5ED, #D6D6D6, white opacities) */
+html.light .text-white:not(:hover),
+html.light .text-luxury-offwhite:not(:hover),
+html.light .text-neutral-100:not(:hover),
+html.light .text-neutral-200:not(:hover),
+html.light .text-\[\#F8F5ED\]:not(:hover),
+html.light .text-\[rgba\(248\,245\,237\,var\(--tw-text-opacity\)\)\]:not(:hover),
+html.light .text-\[\#D6D6D6\]:not(:hover),
+html.light .text-luxury-text:not(:hover) {
+  color: #1A1A1A !important;
+}
+
+/* Muted or Light Grays to Richer Charcoal */
+/* Muted or Light Grays to Richer Charcoal */
+html.light .text-neutral-300:not(:hover),
+html.light .text-neutral-400:not(:hover),
+html.light .text-neutral-500:not(:hover),
+html.light .text-zinc-400:not(:hover),
+html.light .text-zinc-500:not(:hover),
+html.light .text-gray-400:not(:hover),
+html.light .text-gray-500:not(:hover),
+html.light .text-luxury-muted:not(:hover) {
+  color: #555555 !important;
+}
+
+html.light .text-neutral-600:not(:hover),
+html.light .text-neutral-700:not(:hover),
+html.light .text-neutral-800:not(:hover),
+html.light .text-zinc-600:not(:hover),
+html.light .text-zinc-700:not(:hover),
+html.light .text-gray-600:not(:hover),
+html.light .text-gray-700:not(:hover) {
+  color: #2D2D2D !important;
+}
+
+/* Opacity-reduced white text classes conversion */
+html.light .text-white\/90:not(:hover),
+html.light .text-white\/80:not(:hover),
+html.light .text-white\/70:not(:hover),
+html.light .text-white\/60:not(:hover),
+html.light .text-white\/50:not(:hover) {
+  color: #2D2D2D !important;
+}
+
+html.light .text-white\/40:not(:hover),
+html.light .text-white\/30:not(:hover) {
+  color: #555555 !important;
+}
+
+html.light .text-white\/20:not(:hover),
+html.light .text-white\/10:not(:hover) {
+  color: #8B8B8B !important;
+}
+
+/* Protect white text on colored luxury badges/cards/buttons */
+html.light [class*="bg-red"] .text-white,
+html.light [class*="bg-emerald"] .text-white,
+html.light [class*="bg-green"] .text-white,
+html.light [class*="bg-blue"] .text-white,
+html.light [class*="bg-amber"] .text-white,
+html.light [class*="bg-luxury-gold"] .text-white,
+html.light .bg-red-500 .text-white,
+html.light .bg-emerald-500 .text-white {
+  color: #FFFFFF !important;
+}
+
+/* Primary Page Dark Backgrounds to Luxury Cream Ivory */
+html.light .bg-black:not(:hover),
+html.light .bg-neutral-950:not(:hover),
+html.light .bg-\[\#050505\]:not(:hover),
+html.light .bg-\[\#050505\]\/95:not(:hover),
+html.light .bg-\[\#050505\]\/90:not(:hover),
+html.light .bg-\[\#050505\]\/80:not(:hover),
+html.light .bg-\[\#050505\]\/98:not(:hover),
+html.light .bg-neutral-950\/80:not(:hover),
+html.light .bg-neutral-950\/90:not(:hover),
+html.light .bg-neutral-950\/95:not(:hover) {
+  background-color: #F8F5ED !important;
+}
+
+/* Secondary Panels, Cards, and Section Backgrounds to Elegant Warm Beige */
+html.light .bg-neutral-900:not(:hover),
+html.light .bg-neutral-900\/40:not(:hover),
+html.light .bg-neutral-900\/50:not(:hover),
+html.light .bg-neutral-900\/80:not(:hover),
+html.light .bg-neutral-900\/90:not(:hover),
+html.light .bg-neutral-900\/95:not(:hover),
+html.light .bg-neutral-800:not(:hover),
+html.light .bg-\[\#0a0a0a\]:not(:hover),
+html.light .bg-\[\#0d0d0d\]:not(:hover),
+html.light .bg-\[\#111111\]:not(:hover),
+html.light .bg-\[\#151515\]:not(:hover),
+html.light .bg-\[\#1a1a1a\]:not(:hover),
+html.light .bg-\[\#0d0d0d\]\/95:not(:hover),
+html.light .bg-\[\#0d0d0d\]\/98:not(:hover),
+html.light .bg-\[\#0d0d0d\]\/80:not(:hover) {
+  background-color: #EFECE6 !important; /* Elegant warm beige/ivory tone */
+}
+
+/* Convert semi-transparent black overlays/cards to white translucency, protecting overlays */
+html.light .bg-black\/30:not(#mobile-menu-overlay),
+html.light .bg-black\/40:not(#mobile-menu-overlay),
+html.light .bg-black\/50:not(#mobile-menu-overlay) {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+}
+html.light .bg-black\/80:not(#mobile-menu-overlay) {
+  background-color: rgba(248, 245, 237, 0.85) !important;
+}
+html.light .bg-black\/90:not(#mobile-menu-overlay) {
+  background-color: rgba(239, 236, 230, 0.9) !important;
+}
+
+/* Borders conversion to a subtle warm luxury bronze line */
+html.light .border-white\/5,
+html.light .border-white\/10,
+html.light .border-white\/15,
+html.light .border-white\/20,
+html.light .border-white\/30,
+html.light .border-white\/40,
+html.light .border-white\/50,
+html.light .border-neutral-700,
+html.light .border-neutral-800,
+html.light .border-neutral-850,
+html.light .border-zinc-800,
+html.light .border-zinc-700,
+html.light .border-neutral-900,
+html.light .border-amber-500\/10,
+html.light .border-amber-500\/20,
+html.light .border-amber-500\/30 {
+  border-color: rgba(169, 121, 36, 0.15) !important;
+}
+
+/* Glassmorphism panel for Light Mode */
+html.light .glass-panel {
+  background: rgba(248, 245, 237, 0.85) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.25) !important;
+}
+
+/* Luxury Cards Custom Light Aesthetics */
+html.light .luxury-card {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border: 1px solid rgba(169, 121, 36, 0.12) !important;
+}
+
+html.light .luxury-card:hover {
+  border-color: rgba(212, 175, 55, 0.45) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 12px 35px rgba(169, 121, 36, 0.08) !important;
+}
+
+html.light .luxury-card-active {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(212, 175, 55, 0.5) !important;
+  box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.05) !important;
+}
+
+/* Subtle bronze-gold overlay instead of white/5 in dark mode */
+html.light .bg-white\/5:not(:hover) {
+  background-color: rgba(169, 121, 36, 0.04) !important;
+}
+html.light .bg-white\/10:not(:hover) {
+  background-color: rgba(169, 121, 36, 0.08) !important;
+}
+html.light .bg-white\/20:not(:hover) {
+  background-color: rgba(169, 121, 36, 0.12) !important;
+}
+html.light .bg-white\/30:not(:hover) {
+  background-color: rgba(169, 121, 36, 0.16) !important;
+}
+
+/* Inputs & Form Controls with high contrast */
+html.light input,
+html.light select,
+html.light textarea {
+  background-color: #FFFFFF !important;
+  border: 1px solid rgba(169, 121, 36, 0.25) !important;
+  color: #1A1A1A !important;
+}
+
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15) !important;
+  outline: none !important;
+}
+
+/* Universal elegant scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+html.light ::-webkit-scrollbar-track {
+  background: #F8F5ED;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.6);
+}
+

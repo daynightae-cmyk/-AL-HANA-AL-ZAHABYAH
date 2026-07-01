@@ -26,6 +26,7 @@ export const translations = {
     nav_blog: "نصائح ومقالات",
     nav_customer_dashboard: "بوابة العملاء",
     nav_admin_dashboard: "لوحة الإدارة",
+    nav_ai_assistant: "مساعد التصميم الذكي",
 
     // Common UI buttons and labels
     btn_request_quote: "اطلب عرض سعر",
@@ -247,6 +248,7 @@ export const translations = {
     nav_blog: "Design Blog",
     nav_customer_dashboard: "Customer Portal",
     nav_admin_dashboard: "Admin ERP",
+    nav_ai_assistant: "AI Design Assistant",
 
     // Common UI buttons and labels
     btn_request_quote: "Request a Quote",

@@ -1,0 +1,457 @@
+/* src/styles/hero-slider.css */
+
+/* Core Cinematic Hero Wrapper */
+.cinematic-hero {
+  position: relative;
+  width: 100%;
+  height: 88vh; /* default desktop height range 86vh - 92vh */
+  min-height: 580px;
+  background-color: #050505;
+  overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+  .cinematic-hero {
+    height: 100svh; /* full mobile view height */
+    min-height: 520px;
+  }
+}
+
+/* Slide item positioning */
+.cinematic-hero__slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1400ms cubic-bezier(0.25, 1, 0.5, 1), 
+              visibility 1400ms cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 1;
+}
+
+.cinematic-hero__slide.hero-slide-active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 10;
+}
+
+/* Background image handling with subtle Ken Burns zoom */
+.cinematic-hero__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.02) translate3d(0, 0, 0);
+  transition: transform 7000ms cubic-bezier(0.1, 0.8, 0.3, 1),
+              opacity 1400ms cubic-bezier(0.25, 1, 0.5, 1);
+  backface-visibility: hidden;
+}
+
+.hero-slide-active .cinematic-hero__image {
+  transform: scale(1.08) translate3d(5px, -3px, 0);
+}
+
+/* Layered Overlays for Ultimate Luxury Depth */
+.cinematic-hero__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 1. Left dark gradient for text readability (preserving the empty space on left and details on right) */
+.cinematic-hero__overlay--gradient-ltr {
+  background: linear-gradient(90deg, 
+    rgba(5, 5, 5, 0.96) 0%, 
+    rgba(5, 5, 5, 0.90) 35%, 
+    rgba(5, 5, 5, 0.60) 60%, 
+    rgba(5, 5, 5, 0.15) 100%
+  );
+}
+
+/* For Arabic, we still keep the text on the left but aligned right, or let's support RTL gradient if needed */
+.cinematic-hero__overlay--gradient-rtl {
+  /* Since main visual focus is on the right, keeping text block on left is highly recommended to prevent covering design. */
+  /* So we keep the same left gradient to protect text on the left even when dir="rtl" is set! */
+  background: linear-gradient(90deg, 
+    rgba(5, 5, 5, 0.96) 0%, 
+    rgba(5, 5, 5, 0.90) 35%, 
+    rgba(5, 5, 5, 0.60) 60%, 
+    rgba(5, 5, 5, 0.15) 100%
+  );
+}
+
+/* Mobile Overlay - needs to be much darker and more uniform because layout changes on smaller screens */
+@media (max-width: 1024px) {
+  .cinematic-hero__overlay--gradient-ltr,
+  .cinematic-hero__overlay--gradient-rtl {
+    background: linear-gradient(180deg, 
+      rgba(5, 5, 5, 0.92) 0%, 
+      rgba(5, 5, 5, 0.85) 50%, 
+      rgba(5, 5, 5, 0.94) 100%
+    );
+  }
+}
+
+/* 2. Top and bottom cinematic vignette */
+.cinematic-hero__overlay--vignette {
+  background: radial-gradient(circle, transparent 20%, rgba(5, 5, 5, 0.3) 70%, rgba(5, 5, 5, 0.85) 100%);
+}
+
+/* 3. Soft gold radial glow on left behind CTA to enrich luxury look */
+.cinematic-hero__overlay--gold-glow {
+  background: radial-gradient(circle 450px at 20% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 100%);
+}
+
+/* 4. Fine architectural grid overlay */
+.cinematic-hero__overlay--grid {
+  background-image: linear-gradient(to right, rgba(212, 175, 55, 0.02) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(212, 175, 55, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.8;
+}
+
+/* Content block styles & container alignment */
+.cinematic-hero__content-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 12;
+  display: flex;
+  align-items: center;
+}
+
+.cinematic-hero__content {
+  width: 100%;
+  max-width: 720px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* Keep content left aligned on desktop to stay in the empty space */
+@media (min-width: 1024px) {
+  .cinematic-hero__content {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
+
+/* Staggered text entrances */
+.cinematic-hero__eyebrow,
+.cinematic-hero__title,
+.cinematic-hero__subtitle,
+.cinematic-hero__actions,
+.cinematic-hero__meta {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 800ms cubic-bezier(0.25, 1, 0.5, 1),
+              transform 800ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Active transitions with stagger delays */
+.hero-slide-active .cinematic-hero__eyebrow {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 200ms;
+}
+
+.hero-slide-active .cinematic-hero__title {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 350ms;
+}
+
+.hero-slide-active .cinematic-hero__subtitle {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 500ms;
+}
+
+.hero-slide-active .cinematic-hero__actions {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 650ms;
+}
+
+.hero-slide-active .cinematic-hero__meta {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 800ms;
+}
+
+/* Gold light sweep reveal effect */
+.cinematic-hero__gold-sweep {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(212, 175, 55, 0.05) 30%, 
+    rgba(212, 175, 55, 0.15) 50%, 
+    rgba(212, 175, 55, 0.05) 70%, 
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.hero-slide-active .cinematic-hero__gold-sweep {
+  animation: goldReveal 1600ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes goldReveal {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+/* Progress indicator bar at bottom of hero */
+.cinematic-hero__progress-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.05);
+  z-index: 25;
+}
+
+.cinematic-hero__progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #B2902B 0%, #D4AF37 50%, #F3E5AB 100%);
+  width: 0%;
+  transition: width 100ms linear;
+}
+
+/* Navigation Controls (Arrows) - Desktop only */
+.cinematic-hero__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(5, 5, 5, 0.65);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: #D4AF37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 22;
+  transition: all 300ms cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.cinematic-hero__arrow:hover {
+  background-color: #D4AF37;
+  color: #050505;
+  border-color: #D4AF37;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.cinematic-hero__arrow--prev {
+  left: 2rem;
+}
+
+.cinematic-hero__arrow--next {
+  right: 2rem;
+}
+
+/* Slider dots / indicators */
+.cinematic-hero__dots {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 5%;
+  transform: translateX(0);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 22;
+}
+
+@media (max-width: 1024px) {
+  .cinematic-hero__dots {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 2rem;
+  }
+}
+
+.cinematic-hero__dot {
+  width: 24px;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  cursor: pointer;
+  transition: all 400ms cubic-bezier(0.25, 1, 0.5, 1);
+  padding: 0;
+}
+
+.cinematic-hero__dot--active {
+  width: 48px;
+  background-color: #D4AF37;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+}
+
+/* Thumbnail preview rail (Desktop only) */
+.cinematic-hero__thumbs-rail {
+  position: absolute;
+  right: 3%;
+  top: 55%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 22;
+  padding: 8px;
+  background: rgba(5, 5, 5, 0.5);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 4px;
+}
+
+@media (max-width: 1024px) {
+  .cinematic-hero__thumbs-rail {
+    display: none; /* Hide on mobile and small tablets */
+  }
+}
+
+.cinematic-hero__thumb-btn {
+  position: relative;
+  width: 80px;
+  height: 52px;
+  overflow: hidden;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: all 350ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.cinematic-hero__thumb-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5;
+  transition: all 350ms ease;
+}
+
+.cinematic-hero__thumb-btn:hover img,
+.cinematic-hero__thumb-btn--active img {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.cinematic-hero__thumb-btn--active {
+  border-color: #D4AF37;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+/* Scroll hint indicator at the bottom center */
+.cinematic-hero__scroll-hint {
+  position: absolute;
+  bottom: 2.2rem;
+  right: 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  z-index: 22;
+}
+
+@media (max-width: 1024px) {
+  .cinematic-hero__scroll-hint {
+    display: none; /* Hide on mobile to keep clean screen */
+  }
+}
+
+.cinematic-hero__scroll-line {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(to bottom, #D4AF37, transparent);
+  animation: scrollDownLine 2s infinite ease-in-out;
+}
+
+@keyframes scrollDownLine {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  50.1% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+/* High contrast modifications when browser theme is light */
+html.light .cinematic-hero__overlay--gradient-ltr,
+html.light .cinematic-hero__overlay--gradient-rtl {
+  /* We still keep deep dark gradients for high contrast text readability on top of image background */
+  background: linear-gradient(90deg, 
+    rgba(5, 5, 5, 0.98) 0%, 
+    rgba(5, 5, 5, 0.92) 35%, 
+    rgba(5, 5, 5, 0.65) 60%, 
+    rgba(5, 5, 5, 0.20) 100%
+  );
+}
+
+@media (max-width: 1024px) {
+  html.light .cinematic-hero__overlay--gradient-ltr,
+  html.light .cinematic-hero__overlay--gradient-rtl {
+    background: linear-gradient(180deg, 
+      rgba(5, 5, 5, 0.96) 0%, 
+      rgba(5, 5, 5, 0.88) 50%, 
+      rgba(5, 5, 5, 0.96) 100%
+    );
+  }
+}
+
+/* Reduced Motion Mode Support */
+@media (prefers-reduced-motion: reduce) {
+  .cinematic-hero__slide {
+    transition: opacity 600ms ease;
+  }
+  
+  .cinematic-hero__image,
+  .hero-slide-active .cinematic-hero__image {
+    transform: none !important;
+    transition: none !important;
+  }
+  
+  .cinematic-hero__eyebrow,
+  .cinematic-hero__title,
+  .cinematic-hero__subtitle,
+  .cinematic-hero__actions,
+  .cinematic-hero__meta {
+    transform: none !important;
+    transition-delay: 0ms !important;
+    transition: opacity 300ms ease !important;
+  }
+  
+  .cinematic-hero__gold-sweep {
+    animation: none !important;
+  }
+  
+  .cinematic-hero__scroll-line {
+    animation: none !important;
+  }
+}

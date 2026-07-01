@@ -4,6 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { mockBlogPosts } from '../data/mockData';
 import { Calendar, Clock, User, ArrowLeft, AlertTriangle } from 'lucide-react';
+import { SEOHead } from '../components/common/SEOHead';
 
 export const BlogPostPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -45,7 +46,12 @@ export const BlogPostPage: React.FC = () => {
   const categoryLabel = getPostCategoryLabel(post.id);
 
   return (
-    <div id="blog-post-detail-container" className="pt-24 min-h-screen bg-neutral-950 text-white font-sans text-start">
+    <>
+      <SEOHead
+        title={language === 'ar' ? post.title_ar : post.title_en}
+        description={language === 'ar' ? post.excerpt_ar : post.excerpt_en}
+      />
+      <div id="blog-post-detail-container" className="pt-24 min-h-screen bg-neutral-950 text-white font-sans text-start">
       
       {/* 1. Main visual banner and header */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-12 space-y-6">
@@ -150,5 +156,6 @@ export const BlogPostPage: React.FC = () => {
       </section>
 
     </div>
+  </>
   );
 };

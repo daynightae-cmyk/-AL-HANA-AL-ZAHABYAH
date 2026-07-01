@@ -3,29 +3,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { mockProjectGallery } from '../data/mockData';
+import { BeforeAfterSlider } from '../components/common/BeforeAfterSlider';
 import { Sparkles, ArrowRight, Layers, HelpCircle, Wrench, Trophy } from 'lucide-react';
 
 export const BeforeAfterPage: React.FC = () => {
   const { language, t } = useApp();
   
-  // Keep track of toggle state for each project: 'before' or 'after'
-  const [comparisons, setComparisons] = useState<Record<string, 'before' | 'after'>>(() => {
-    const initial: Record<string, 'before' | 'after'> = {};
-    mockProjectGallery.forEach((p) => {
-      if (p.before_image_url && p.after_image_url) {
-        initial[p.id] = 'after'; // default to showing 'after'
-      }
-    });
-    return initial;
-  });
-
-  const toggleComparison = (projectId: string, state: 'before' | 'after') => {
-    setComparisons((prev) => ({
-      ...prev,
-      [projectId]: state
-    }));
-  };
-
   // Filter only projects that have both before and after URLs
   const beforeAfterProjects = mockProjectGallery.filter(
     (p) => p.before_image_url && p.after_image_url
@@ -89,7 +72,6 @@ export const BeforeAfterPage: React.FC = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-24">
         <div className="space-y-20">
           {beforeAfterProjects.map((project) => {
-            const currentMode = comparisons[project.id] || 'after';
             const caseStudy = caseStudiesInfo[project.id];
             
             return (
@@ -99,52 +81,22 @@ export const BeforeAfterPage: React.FC = () => {
               >
                 
                 {/* Image Comparison Screen (Span 6) */}
-                <div className="lg:col-span-6 flex flex-col justify-between relative min-h-[300px] sm:min-h-[400px]">
-                  <div className="relative flex-1 rounded-xl overflow-hidden bg-neutral-950 border border-neutral-800">
-                    <img
-                      src={currentMode === 'before' ? project.before_image_url : project.after_image_url}
-                      alt={language === 'ar' ? project.title_ar : project.title_en}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover transition-all duration-350"
-                    />
-
-                    {/* Image indicator badge */}
-                    <div className={`absolute top-4 left-4 px-3 py-1.5 rounded text-xs font-mono font-bold uppercase tracking-widest border shadow-lg backdrop-blur-md ${
-                      currentMode === 'before'
-                        ? 'bg-red-500/20 text-red-400 border-red-500/35'
-                        : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/35'
-                    }`}>
-                      {currentMode === 'before' ? t.before_label : t.after_label}
-                    </div>
-
-                    {/* UAE City Badge */}
-                    <div className="absolute top-4 right-4 bg-neutral-950/80 px-2.5 py-1 rounded text-[11px] text-neutral-300 font-sans">
+                <div className="lg:col-span-6 flex flex-col justify-center relative">
+                  <BeforeAfterSlider
+                    beforeImage={project.before_image_url!}
+                    afterImage={project.after_image_url!}
+                    beforeLabel={language === 'ar' ? "قبل العمل" : "BEFORE"}
+                    afterLabel={language === 'ar' ? "بعد التسليم" : "AFTER"}
+                    heightClass="h-[320px] sm:h-[420px]"
+                  />
+                  {/* Emirate Indicator Floating under slider */}
+                  <div className="flex items-center justify-between mt-3 px-1">
+                    <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
+                      {language === 'ar' ? "اسحب الشريط للمقارنة" : "← Drag bar to compare →"}
+                    </span>
+                    <span className="text-[10px] font-mono bg-white/5 border border-white/10 px-2 py-0.5 text-luxury-gold uppercase font-bold">
                       {project.emirate}
-                    </div>
-                  </div>
-
-                  {/* Manual trigger selectors */}
-                  <div className="flex items-center justify-center gap-3 pt-4 border-t border-neutral-850 mt-4">
-                    <button
-                      onClick={() => toggleComparison(project.id, 'before')}
-                      className={`px-5 py-2.5 rounded-full text-xs font-extrabold font-mono transition-all cursor-pointer ${
-                        currentMode === 'before'
-                          ? 'bg-red-500 text-white shadow-lg shadow-red-500/10'
-                          : 'bg-neutral-950 border border-neutral-800 text-neutral-400 hover:text-red-400'
-                      }`}
-                    >
-                      {language === 'ar' ? "عرض حالة: قبل العمل" : "View: BEFORE Renovation"}
-                    </button>
-                    <button
-                      onClick={() => toggleComparison(project.id, 'after')}
-                      className={`px-5 py-2.5 rounded-full text-xs font-extrabold font-mono transition-all cursor-pointer ${
-                        currentMode === 'after'
-                          ? 'bg-emerald-500 text-neutral-950 shadow-lg shadow-emerald-500/10'
-                          : 'bg-neutral-950 border border-neutral-800 text-neutral-400 hover:text-emerald-400'
-                      }`}
-                    >
-                      {language === 'ar' ? "عرض حالة: بعد التسليم" : "View: AFTER Handover"}
-                    </button>
+                    </span>
                   </div>
                 </div>
 

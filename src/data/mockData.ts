@@ -3,87 +3,10 @@
 // Tailored for the UAE market (Dubai, Abu Dhabi, Sharjah, etc.)
 
 import { Service, ServicePackage, Project, ProjectGallery, Testimonial, FAQItem, BlogPost } from '../types/database';
+import { servicesData } from './services';
 
-export const mockServices: Service[] = [
-  {
-    id: "s1",
-    name_ar: "التصميم المنزلي",
-    name_en: "Home Design",
-    slug: "home-design",
-    description_ar: "تصميم المساحات المنزلية بأسلوب يجمع بين الجمال والوظيفة، مع اختيار الألوان، توزيع الأثاث، الإضاءة، والخامات بما يناسب ذوق العميل وطبيعة المكان.",
-    description_en: "Designing residential spaces combining beauty and functionality, including color selection, furniture layout, lighting, and premium materials.",
-    icon: "Layout",
-    image_url: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
-    is_active: true,
-    sort_order: 1,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: "s2",
-    name_ar: "دهانات المنازل",
-    name_en: "Home Paint",
-    slug: "home-paint",
-    description_ar: "تنفيذ أعمال الدهانات الداخلية والخارجية، الدهانات الديكورية، المعالجات الجدارية، واختيار الألوان المناسبة لكل مساحة بأسلوب احترافي ونظيف.",
-    description_en: "Professional interior and exterior painting, decorative paint textures, wall treatments, and color consulting.",
-    icon: "Paintbrush",
-    image_url: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=1200&q=80",
-    is_active: true,
-    sort_order: 2,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: "s3",
-    name_ar: "أعمال الديكور",
-    name_en: "Home Decoration",
-    slug: "home-decoration",
-    description_ar: "أعمال ديكور متكاملة تشمل الجبس، الإضاءة، اللوحات الجدارية، التشطيبات الجمالية، الستائر، واللمسات النهائية التي تمنح المكان طابعاً فاخراً.",
-    description_en: "Comprehensive decoration including gypsum ceilings, custom lighting, wall panels, premium finishes, and luxury draperies.",
-    icon: "Sparkles",
-    image_url: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80",
-    is_active: true,
-    sort_order: 3,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: "s4",
-    name_ar: "تجديد المنازل",
-    name_en: "Home Renovation",
-    slug: "home-renovation",
-    description_ar: "تجديد المنازل والشقق من خلال تحسين التصميم، تحديث التشطيبات، تغيير الأرضيات، تطوير المطابخ والحمامات، وإعادة إحياء المساحة بالكامل.",
-    description_en: "Renovating homes and apartments by updating designs, finishes, premium floorings, modern kitchens, and luxury bathrooms.",
-    icon: "Wrench",
-    image_url: "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?auto=format&fit=crop&w=1200&q=80",
-    is_active: true,
-    sort_order: 4,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: "s5",
-    name_ar: "تجديد الفلل",
-    name_en: "Villa Renovation",
-    slug: "villa-renovation",
-    description_ar: "حلول متقدمة لتجديد الفلل تشمل الواجهات، المجالس، غرف النوم، المداخل، الحدائق، الإضاءة، والديكور الداخلي والخارجي.",
-    description_en: "Premium villa renovation services covering structural facades, majlis areas, master bedrooms, entrances, and luxury landscaping.",
-    icon: "Home",
-    image_url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-    is_active: true,
-    sort_order: 5,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: "s6",
-    name_ar: "ديكور المشاريع التجارية",
-    name_en: "Commercial Decoration",
-    slug: "commercial-decoration",
-    description_ar: "تصميم وتنفيذ ديكورات المكاتب، المحلات، المطاعم، الصالونات، والمعارض التجارية بشكل يخدم العلامة ويجذب العملاء.",
-    description_en: "Designing and executing high-end interiors for offices, retail stores, restaurants, luxury salons, and showrooms.",
-    icon: "Briefcase",
-    image_url: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",
-    is_active: true,
-    sort_order: 6,
-    created_at: new Date().toISOString()
-  }
-];
+export const mockServices: Service[] = servicesData;
+
 
 export const mockServicePackages: Record<string, ServicePackage[]> = {
   "home-design": [

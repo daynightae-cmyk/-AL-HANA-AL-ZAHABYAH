@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { saveLocalQuoteSubmission } from '../data/mockData';
+import { SEOHead } from '../components/common/SEOHead';
 import {
   CheckCircle,
   FileText,
@@ -13,11 +14,14 @@ import {
   Loader2,
   ChevronLeft,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Upload,
+  Trash2,
+  Image as ImageIcon
 } from 'lucide-react';
 
 export const RequestQuotePage: React.FC = () => {
-  const { language, t } = useApp();
+  const { language, theme, t } = useApp();
   const navigate = useNavigate();
 
   // Multi-step tracking
@@ -43,6 +47,10 @@ export const RequestQuotePage: React.FC = () => {
     project_description: ''
   });
 
+  // Attached files state
+  const [attachedFiles, setAttachedFiles] = useState<{ name: string; size: string; preview: string }[]>([]);
+  const [isDragActive, setIsDragActive] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -50,6 +58,45 @@ export const RequestQuotePage: React.FC = () => {
       [name]: value
     }));
     setValidationError(null); // clear errors
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setIsDragActive(true);
+    } else if (e.type === "dragleave") {
+      setIsDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragActive(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      addFiles(e.dataTransfer.files);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      addFiles(e.target.files);
+    }
+  };
+
+  const addFiles = (files: FileList) => {
+    const newFiles = Array.from(files).map(file => ({
+      name: file.name,
+      size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
+      preview: URL.createObjectURL(file)
+    }));
+    setAttachedFiles(prev => [...prev, ...newFiles]);
+  };
+
+  const removeFile = (index: number) => {
+    setAttachedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const validateStep = (): boolean => {
@@ -130,7 +177,7 @@ export const RequestQuotePage: React.FC = () => {
       } finally {
         setLoading(false);
       }
-    }, 1200);
+    }, 1400);
   };
 
   const emiratesList = [
@@ -181,422 +228,537 @@ export const RequestQuotePage: React.FC = () => {
     { value: "Not Sure", label_ar: "غير متأكد / يحتاج لمعاينة ومناقشة", label_en: "Not Sure / Depends on visit" }
   ];
 
+  const isLight = theme === 'light';
+
   return (
-    <div id="quote-page-container" className="pt-24 min-h-screen bg-neutral-950 text-white font-sans flex flex-col justify-between">
-      
-      {/* Upper header */}
-      <section className="relative py-12 px-4 text-center border-b border-amber-500/10 bg-gradient-to-b from-neutral-950 to-neutral-900">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-amber-500/5 rounded-full blur-[80px] pointer-events-none"></div>
-        <div className="max-w-4xl mx-auto space-y-3">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
-            {t.quote_form_title}
-          </h1>
-          <p className="text-xs sm:text-sm text-neutral-400 max-w-2xl mx-auto leading-relaxed">
-            {t.quote_form_subtitle}
-          </p>
-        </div>
-      </section>
-
-      {/* Main Grid form wrapper */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 py-12 w-full flex-1">
+    <>
+      <SEOHead
+        title={language === 'ar' ? "اطلب عرض سعر ومعاينة مجانية" : "Request Free Inspection & Quote"}
+        description={language === 'ar' ? "احجز موعد معاينة فنية للجدران والجبس والدهانات مجاناً في دبي والشارقة وأبوظبي." : "Schedule a professional site measurement and color advisory visit at zero charge."}
+      />
+      <div 
+        id="quote-page-container" 
+        className={`pt-28 pb-16 min-h-screen font-sans flex flex-col justify-between transition-colors duration-300 ${
+          isLight ? 'bg-[#F8F5ED] text-neutral-900' : 'bg-neutral-950 text-white'
+        }`}
+      >
         
-        {successData ? (
-          /* SUCCESS SCREEN */
-          <div
-            id="quote-success-card"
-            className="p-8 sm:p-12 rounded-2xl bg-neutral-900 border border-amber-500/30 shadow-2xl text-center space-y-6 max-w-2xl mx-auto animate-fade-in"
-          >
-            <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/25 rounded-full flex items-center justify-center mx-auto text-emerald-400 animate-pulse">
-              <CheckCircle className="w-10 h-10" />
-            </div>
-
-            <div className="space-y-3">
-              <h2 className="text-2xl font-extrabold text-white">
-                {t.quote_success_title}
-              </h2>
-              <p className="text-sm text-neutral-300 leading-relaxed">
-                {t.quote_success_msg_1}
-              </p>
-            </div>
-
-            {/* Generated Code Panel */}
-            <div className="p-4 bg-neutral-950 border border-neutral-800 rounded-lg max-w-xs mx-auto">
-              <span className="block text-[10px] text-neutral-500 font-mono uppercase tracking-widest">
-                Your Custom tracking number
-              </span>
-              <span className="text-2xl font-extrabold text-amber-400 font-mono tracking-wider block mt-1">
-                {successData.request_number}
-              </span>
-            </div>
-
-            <p className="text-xs text-neutral-400 leading-relaxed">
-              {t.quote_success_msg_2}
+        {/* Upper header */}
+        <section className={`relative py-12 px-4 text-center border-b ${
+          isLight ? 'bg-[#EFECE6]/50 border-luxury-gold/30' : 'bg-gradient-to-b from-neutral-950 to-neutral-900 border-white/5'
+        }`}>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-luxury-gold/5 rounded-full blur-[80px] pointer-events-none"></div>
+          <div className="max-w-4xl mx-auto space-y-3">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold tracking-tight text-luxury-gold-dark">
+              {t.quote_form_title}
+            </h1>
+            <p className={`text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed ${isLight ? 'text-neutral-600' : 'text-luxury-muted'}`}>
+              {t.quote_form_subtitle}
             </p>
-
-            <div className="pt-6 border-t border-neutral-850 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                to={`/track-project?code=${successData.request_number}`}
-                className="w-full sm:w-auto px-6 py-3 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-600 text-neutral-950 font-bold text-sm shadow-lg shadow-amber-500/15"
-              >
-                {language === 'ar' ? "تتبع حالة الطلب الآن" : "Track Status Now"}
-              </Link>
-              <Link
-                to="/"
-                className="w-full sm:w-auto px-6 py-3 rounded-lg bg-neutral-950 border border-neutral-800 text-neutral-300 hover:text-amber-400 text-sm font-bold"
-              >
-                {language === 'ar' ? "العودة للرئيسية" : "Go to Homepage"}
-              </Link>
-            </div>
           </div>
-        ) : (
-          /* MULTI STEP FORM FORMULARY */
-          <div className="bg-neutral-900 border border-neutral-850 rounded-2xl shadow-xl overflow-hidden">
-            
-            {/* Step Indicators */}
-            <div className="grid grid-cols-3 border-b border-neutral-850 text-center text-xs font-mono">
-              <div className={`p-4 font-bold border-r border-neutral-850 flex items-center justify-center gap-2 ${step === 1 ? 'bg-neutral-950 text-amber-400 border-b-2 border-amber-500' : 'text-neutral-500'}`}>
-                <User className="w-4 h-4" />
-                <span className="hidden sm:inline">{language === 'ar' ? "البيانات الشخصية" : "Personal info"}</span>
-                <span className="sm:hidden">1</span>
+        </section>
+
+        {/* Main Grid form wrapper */}
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 py-12 w-full flex-1">
+          
+          {successData ? (
+            /* SUCCESS SCREEN */
+            <div
+              id="quote-success-card"
+              className={`p-8 sm:p-12 rounded-none border shadow-2xl text-center space-y-6 max-w-2xl mx-auto animate-fade-in ${
+                isLight ? 'bg-white border-luxury-gold/45' : 'bg-neutral-900 border-luxury-gold/30'
+              }`}
+            >
+              <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/25 rounded-full flex items-center justify-center mx-auto text-emerald-500 animate-pulse">
+                <CheckCircle className="w-10 h-10" />
               </div>
-              <div className={`p-4 font-bold border-r border-neutral-850 flex items-center justify-center gap-2 ${step === 2 ? 'bg-neutral-950 text-amber-400 border-b-2 border-amber-500' : 'text-neutral-500'}`}>
-                <Home className="w-4 h-4" />
-                <span className="hidden sm:inline">{language === 'ar' ? "تفاصيل المشروع" : "Project details"}</span>
-                <span className="sm:hidden">2</span>
+
+              <div className="space-y-3 text-center">
+                <h2 className="text-xl sm:text-2xl font-serif font-bold">
+                  {t.quote_success_title}
+                </h2>
+                <p className={`text-xs sm:text-sm leading-relaxed ${isLight ? 'text-neutral-600' : 'text-neutral-300'}`}>
+                  {t.quote_success_msg_1}
+                </p>
               </div>
-              <div className={`p-4 font-bold flex items-center justify-center gap-2 ${step === 3 ? 'bg-neutral-950 text-amber-400 border-b-2 border-amber-500' : 'text-neutral-500'}`}>
-                <Calendar className="w-4 h-4" />
-                <span className="hidden sm:inline">{language === 'ar' ? "طريقة التواصل" : "Visit Date"}</span>
-                <span className="sm:hidden">3</span>
+
+              {/* Generated Code Panel */}
+              <div className={`p-4 border rounded-none max-w-xs mx-auto ${isLight ? 'bg-[#F8F5ED] border-black/10' : 'bg-neutral-950 border-neutral-800'}`}>
+                <span className="block text-[9px] text-neutral-500 font-mono uppercase tracking-widest">
+                  Your Custom tracking number
+                </span>
+                <span className="text-xl sm:text-2xl font-extrabold text-luxury-gold-dark font-mono tracking-wider block mt-1">
+                  {successData.request_number}
+                </span>
+              </div>
+
+              <p className="text-xs text-neutral-400 leading-relaxed max-w-md mx-auto">
+                {t.quote_success_msg_2}
+              </p>
+
+              <div className="pt-6 border-t border-black/5 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link
+                  to={`/track-project?code=${successData.request_number}`}
+                  className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-luxury-gold to-yellow-600 text-neutral-950 font-bold text-xs uppercase shadow-md hover:brightness-110 text-center"
+                >
+                  {language === 'ar' ? "تتبع حالة الطلب الآن" : "Track Status Now"}
+                </Link>
+                <Link
+                  to="/"
+                  className={`w-full sm:w-auto px-6 py-3 border text-xs font-bold uppercase text-center ${
+                    isLight ? 'bg-[#F8F5ED] border-black/15 text-neutral-800' : 'bg-neutral-950 border-neutral-800 text-neutral-300'
+                  }`}
+                >
+                  {language === 'ar' ? "العودة للرئيسية" : "Go to Homepage"}
+                </Link>
               </div>
             </div>
-
-            {/* Validation Notification */}
-            {validationError && (
-              <div className="m-5 p-4 rounded bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-start gap-2.5 text-start">
-                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-                <span>{validationError}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6 text-start">
+          ) : (
+            /* MULTI STEP FORM FORMULARY */
+            <div className={`border rounded-none shadow-xl overflow-hidden ${
+              isLight ? 'bg-white border-black/10' : 'bg-neutral-900 border-white/5'
+            }`}>
               
-              {/* STEP 1: Personal Coordinates */}
-              {step === 1 && (
-                <div className="space-y-4 animate-fade-in">
-                  <h3 className="text-base font-bold text-amber-400 uppercase tracking-wider border-b border-neutral-800 pb-2">
-                    {t.form_personal_info}
-                  </h3>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="block text-xs font-mono text-neutral-400 uppercase tracking-wider font-bold">
-                        {t.field_full_name} <span className="text-amber-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="full_name"
-                        value={formData.full_name}
-                        onChange={handleChange}
-                        placeholder={language === 'ar' ? "مثال: م. وائل مدبولي" : "e.g. Eng. Wael Madbouli"}
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500/50 rounded p-3 text-sm focus:outline-none"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-xs font-mono text-neutral-400 uppercase tracking-wider font-bold">
-                        {t.field_phone} <span className="text-amber-500">*</span>
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        placeholder="+971 50 000 0000"
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500/50 rounded p-3 text-sm focus:outline-none font-mono"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-xs font-mono text-neutral-400 uppercase tracking-wider font-bold">
-                        {t.field_whatsapp} ({language === 'ar' ? 'اختياري' : 'Optional'})
-                      </label>
-                      <input
-                        type="tel"
-                        name="whatsapp"
-                        value={formData.whatsapp}
-                        onChange={handleChange}
-                        placeholder="+971 50 000 0000"
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500/50 rounded p-3 text-sm focus:outline-none font-mono"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-xs font-mono text-neutral-400 uppercase tracking-wider font-bold">
-                        {t.field_email} <span className="text-amber-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="admin@alhanaalzahabyah.com"
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500/50 rounded p-3 text-sm focus:outline-none font-mono"
-                        required
-                      />
-                    </div>
-                  </div>
+              {/* Step Indicators */}
+              <div className={`grid grid-cols-3 border-b text-center text-[10px] sm:text-xs font-mono ${
+                isLight ? 'border-black/5' : 'border-white/5'
+              }`}>
+                <div className={`p-4 font-bold border-r flex items-center justify-center gap-2 ${
+                  isLight ? 'border-black/5' : 'border-white/5'
+                } ${step === 1 ? 'bg-luxury-gold/10 text-luxury-gold-dark border-b-2 border-luxury-gold' : 'text-neutral-500'}`}>
+                  <User className="w-4 h-4 text-luxury-gold-dark" />
+                  <span className="hidden sm:inline">{language === 'ar' ? "البيانات الشخصية" : "Personal info"}</span>
+                  <span className="sm:hidden">1</span>
                 </div>
-              )}
-
-              {/* STEP 2: Project Parameters */}
-              {step === 2 && (
-                <div className="space-y-4 animate-fade-in">
-                  <h3 className="text-base font-bold text-amber-400 uppercase tracking-wider border-b border-neutral-800 pb-2">
-                    {t.form_property_info}
-                  </h3>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="block text-xs font-mono text-neutral-400 uppercase tracking-wider font-bold">
-                        {t.field_emirate} <span className="text-amber-500">*</span>
-                      </label>
-                      <select
-                        name="emirate"
-                        value={formData.emirate}
-                        onChange={handleChange}
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500/50 rounded p-3 text-sm focus:outline-none"
-                        required
-                      >
-                        <option value="">{t.placeholder_select}</option>
-                        {emiratesList.map(e => (
-                          <option key={e.value} value={e.value}>
-                            {language === 'ar' ? e.label_ar : e.label_en}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-xs font-mono text-neutral-400 uppercase tracking-wider font-bold">
-                        {t.field_area} <span className="text-amber-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="area"
-                        value={formData.area}
-                        onChange={handleChange}
-                        placeholder={language === 'ar' ? "مثال: جميرا 1، الخوانيج، البطين" : "e.g. Jumeirah 1, Al Bateen"}
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500/50 rounded p-3 text-sm focus:outline-none"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-xs font-mono text-neutral-400 uppercase tracking-wider font-bold">
-                        {t.field_property_type} <span className="text-amber-500">*</span>
-                      </label>
-                      <select
-                        name="property_type"
-                        value={formData.property_type}
-                        onChange={handleChange}
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500/50 rounded p-3 text-sm focus:outline-none"
-                        required
-                      >
-                        <option value="">{t.placeholder_select}</option>
-                        {propertyTypes.map(p => (
-                          <option key={p.value} value={p.value}>
-                            {language === 'ar' ? p.label_ar : p.label_en}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-xs font-mono text-neutral-400 uppercase tracking-wider font-bold">
-                        {t.field_service_needed} <span className="text-amber-500">*</span>
-                      </label>
-                      <select
-                        name="service_type"
-                        value={formData.service_type}
-                        onChange={handleChange}
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500/50 rounded p-3 text-sm focus:outline-none"
-                        required
-                      >
-                        <option value="">{t.placeholder_select}</option>
-                        {servicesList.map(s => (
-                          <option key={s.value} value={s.value}>
-                            {language === 'ar' ? s.label_ar : s.label_en}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-xs font-mono text-neutral-400 uppercase tracking-wider font-bold">
-                        {t.field_project_size}
-                      </label>
-                      <select
-                        name="project_size"
-                        value={formData.project_size}
-                        onChange={handleChange}
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500/50 rounded p-3 text-sm focus:outline-none"
-                      >
-                        <option value="">{t.placeholder_select}</option>
-                        {sizeOptions.map(s => (
-                          <option key={s.value} value={s.value}>
-                            {language === 'ar' ? s.label_ar : s.label_en}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-xs font-mono text-neutral-400 uppercase tracking-wider font-bold">
-                        {t.field_budget_range}
-                      </label>
-                      <select
-                        name="budget_range"
-                        value={formData.budget_range}
-                        onChange={handleChange}
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500/50 rounded p-3 text-sm focus:outline-none"
-                      >
-                        <option value="">{t.placeholder_select}</option>
-                        {budgetOptions.map(b => (
-                          <option key={b.value} value={b.value}>
-                            {language === 'ar' ? b.label_ar : b.label_en}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
+                <div className={`p-4 font-bold border-r flex items-center justify-center gap-2 ${
+                  isLight ? 'border-black/5' : 'border-white/5'
+                } ${step === 2 ? 'bg-luxury-gold/10 text-luxury-gold-dark border-b-2 border-luxury-gold' : 'text-neutral-500'}`}>
+                  <Home className="w-4 h-4 text-luxury-gold-dark" />
+                  <span className="hidden sm:inline">{language === 'ar' ? "تفاصيل المشروع" : "Project details"}</span>
+                  <span className="sm:hidden">2</span>
                 </div>
-              )}
-
-              {/* STEP 3: Timeline & Handover */}
-              {step === 3 && (
-                <div className="space-y-4 animate-fade-in">
-                  <h3 className="text-base font-bold text-amber-400 uppercase tracking-wider border-b border-neutral-800 pb-2">
-                    {t.form_contact_preference}
-                  </h3>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="block text-xs font-mono text-neutral-400 uppercase tracking-wider font-bold">
-                        {t.field_contact_method} <span className="text-amber-500">*</span>
-                      </label>
-                      <select
-                        name="preferred_contact_method"
-                        value={formData.preferred_contact_method}
-                        onChange={handleChange}
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500/50 rounded p-3 text-sm focus:outline-none"
-                        required
-                      >
-                        <option value="">{t.placeholder_select}</option>
-                        <option value="WhatsApp">{language === 'ar' ? "رسالة عبر واتساب" : "WhatsApp Chat"}</option>
-                        <option value="Phone Call">{language === 'ar' ? "اتصال هاتفي مباشر" : "Direct Phone Call"}</option>
-                        <option value="Email">{language === 'ar' ? "بريد إلكتروني رسمي" : "Official Email Support"}</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="block text-xs font-mono text-neutral-400 uppercase tracking-wider font-bold">
-                        {t.field_visit_date} <span className="text-amber-500">*</span>
-                      </label>
-                      <input
-                        type="date"
-                        name="preferred_visit_date"
-                        value={formData.preferred_visit_date}
-                        onChange={handleChange}
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500/50 rounded p-3 text-sm focus:outline-none font-mono"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block text-xs font-mono text-neutral-400 uppercase tracking-wider font-bold">
-                      {t.field_description}
-                    </label>
-                    <textarea
-                      name="project_description"
-                      value={formData.project_description}
-                      onChange={handleChange}
-                      rows={4}
-                      placeholder={language === 'ar' ? "يرجى ذكر أي تفاصيل تهمك، مثلاً: نوع دهان معين، تكسير حوائط، تمديد جبس ليد مخفي..." : "Enter any specifications, e.g., preferred paint luster, gypsum sheets counts, LED magnetic tracks length..."}
-                      className="w-full bg-neutral-950 border border-neutral-800 focus:border-amber-500/50 rounded p-3 text-sm focus:outline-none resize-none"
-                    ></textarea>
-                  </div>
-
-                  <div className="space-y-1.5 p-4 rounded bg-neutral-950 border border-neutral-800">
-                    <span className="block text-xs font-mono font-bold text-amber-500 uppercase tracking-wider">
-                      {t.field_upload_images}
-                    </span>
-                    <p className="text-[10px] text-neutral-500">
-                      {language === 'ar' ? "يمكنك رفع حتى 5 صور للمساحة الحالية. سيتم ربط ميزة الرفع السحابي فور ربط Supabase." : "You may attach progress photo logs. Cloud storage is prepared and connects directly."}
-                    </p>
-                    <input
-                      type="file"
-                      disabled
-                      className="w-full bg-neutral-900 border border-dashed border-neutral-800 text-xs text-neutral-500 rounded p-3 cursor-not-allowed"
-                    />
-                  </div>
+                <div className={`p-4 font-bold flex items-center justify-center gap-2 ${step === 3 ? 'bg-luxury-gold/10 text-luxury-gold-dark border-b-2 border-luxury-gold' : 'text-neutral-500'}`}>
+                  <Calendar className="w-4 h-4 text-luxury-gold-dark" />
+                  <span className="hidden sm:inline">{language === 'ar' ? "طريقة التواصل" : "Visit Date"}</span>
+                  <span className="sm:hidden">3</span>
                 </div>
-              )}
-
-              {/* Step Actions console */}
-              <div className="pt-6 border-t border-neutral-850 flex items-center justify-between">
-                {step > 1 ? (
-                  <button
-                    type="button"
-                    onClick={handleBack}
-                    className="px-5 py-2.5 rounded bg-neutral-950 hover:bg-neutral-900 border border-neutral-800 text-neutral-300 hover:text-amber-400 text-xs font-bold font-mono flex items-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
-                    <span>{t.btn_back}</span>
-                  </button>
-                ) : (
-                  <div></div>
-                )}
-
-                {step < 3 ? (
-                  <button
-                    type="button"
-                    onClick={handleNext}
-                    className="px-5 py-2.5 rounded bg-amber-500 hover:bg-amber-600 text-neutral-950 text-xs font-bold font-mono flex items-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    <span>{t.btn_next}</span>
-                    <ChevronRight className="w-4 h-4 rtl:rotate-180" />
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="px-6 py-3 rounded bg-gradient-to-r from-amber-500 to-yellow-600 text-neutral-950 font-extrabold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer"
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin text-neutral-950" />
-                        <span>{language === 'ar' ? "جاري التسجيل..." : "Submitting..."}</span>
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-4 h-4 text-neutral-950" />
-                        <span>{language === 'ar' ? "تقديم الطلب النهائي" : "Confirm Quote Request"}</span>
-                      </>
-                    )}
-                  </button>
-                )}
               </div>
 
-            </form>
-          </div>
-        )}
+              {/* Validation Notification */}
+              {validationError && (
+                <div className="m-5 p-4 rounded-none bg-red-500/10 border border-red-500/20 text-red-500 text-xs flex items-start gap-2.5 text-start">
+                  <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                  <span>{validationError}</span>
+                </div>
+              )}
 
-      </section>
+              <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6 text-start">
+                
+                {/* STEP 1: Personal Coordinates */}
+                {step === 1 && (
+                  <div className="space-y-4 animate-fade-in">
+                    <h3 className="text-sm font-serif font-bold text-luxury-gold-dark uppercase tracking-wider border-b border-black/5 pb-2">
+                      {t.form_personal_info}
+                    </h3>
 
-    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                          {t.field_full_name} <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="full_name"
+                          value={formData.full_name}
+                          onChange={handleChange}
+                          placeholder={language === 'ar' ? "مثال: م. وائل مدبولي" : "e.g. Eng. Wael Madbouli"}
+                          className={`w-full border p-3 text-sm rounded-none focus:outline-none ${
+                            isLight ? 'bg-[#F8F5ED] border-black/10 focus:border-luxury-gold-dark text-neutral-900' : 'bg-neutral-950 border-neutral-800 focus:border-luxury-gold text-white'
+                          }`}
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                          {t.field_phone} <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          placeholder="+971 50 000 0000"
+                          className={`w-full border p-3 text-sm rounded-none focus:outline-none font-mono ${
+                            isLight ? 'bg-[#F8F5ED] border-black/10 focus:border-luxury-gold-dark text-neutral-900' : 'bg-neutral-950 border-neutral-800 focus:border-luxury-gold text-white'
+                          }`}
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                          {t.field_whatsapp} ({language === 'ar' ? 'اختياري' : 'Optional'})
+                        </label>
+                        <input
+                          type="tel"
+                          name="whatsapp"
+                          value={formData.whatsapp}
+                          onChange={handleChange}
+                          placeholder="+971 50 000 0000"
+                          className={`w-full border p-3 text-sm rounded-none focus:outline-none font-mono ${
+                            isLight ? 'bg-[#F8F5ED] border-black/10 focus:border-luxury-gold-dark text-neutral-900' : 'bg-neutral-950 border-neutral-800 focus:border-luxury-gold text-white'
+                          }`}
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                          {t.field_email} <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          placeholder="customer@alhanaalzahabyah.com"
+                          className={`w-full border p-3 text-sm rounded-none focus:outline-none font-mono ${
+                            isLight ? 'bg-[#F8F5ED] border-black/10 focus:border-luxury-gold-dark text-neutral-900' : 'bg-neutral-950 border-neutral-800 focus:border-luxury-gold text-white'
+                          }`}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* STEP 2: Project Parameters */}
+                {step === 2 && (
+                  <div className="space-y-4 animate-fade-in">
+                    <h3 className="text-sm font-serif font-bold text-luxury-gold-dark uppercase tracking-wider border-b border-black/5 pb-2">
+                      {t.form_property_info}
+                    </h3>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                          {t.field_emirate} <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          name="emirate"
+                          value={formData.emirate}
+                          onChange={handleChange}
+                          className={`w-full border p-3 text-sm rounded-none focus:outline-none ${
+                            isLight ? 'bg-[#F8F5ED] border-black/10 focus:border-luxury-gold-dark text-neutral-900' : 'bg-neutral-950 border-neutral-800 focus:border-luxury-gold text-white'
+                          }`}
+                          required
+                        >
+                          <option value="">{t.placeholder_select}</option>
+                          {emiratesList.map(e => (
+                            <option key={e.value} value={e.value}>
+                              {language === 'ar' ? e.label_ar : e.label_en}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                          {t.field_area} <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="area"
+                          value={formData.area}
+                          onChange={handleChange}
+                          placeholder={language === 'ar' ? "مثال: جميرا 1، الخوانيج، البطين" : "e.g. Jumeirah 1, Al Bateen"}
+                          className={`w-full border p-3 text-sm rounded-none focus:outline-none ${
+                            isLight ? 'bg-[#F8F5ED] border-black/10 focus:border-luxury-gold-dark text-neutral-900' : 'bg-neutral-950 border-neutral-800 focus:border-luxury-gold text-white'
+                          }`}
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                          {t.field_property_type} <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          name="property_type"
+                          value={formData.property_type}
+                          onChange={handleChange}
+                          className={`w-full border p-3 text-sm rounded-none focus:outline-none ${
+                            isLight ? 'bg-[#F8F5ED] border-black/10 focus:border-luxury-gold-dark text-neutral-900' : 'bg-neutral-950 border-neutral-800 focus:border-luxury-gold text-white'
+                          }`}
+                          required
+                        >
+                          <option value="">{t.placeholder_select}</option>
+                          {propertyTypes.map(p => (
+                            <option key={p.value} value={p.value}>
+                              {language === 'ar' ? p.label_ar : p.label_en}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                          {t.field_service_needed} <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          name="service_type"
+                          value={formData.service_type}
+                          onChange={handleChange}
+                          className={`w-full border p-3 text-sm rounded-none focus:outline-none ${
+                            isLight ? 'bg-[#F8F5ED] border-black/10 focus:border-luxury-gold-dark text-neutral-900' : 'bg-neutral-950 border-neutral-800 focus:border-luxury-gold text-white'
+                          }`}
+                          required
+                        >
+                          <option value="">{t.placeholder_select}</option>
+                          {servicesList.map(s => (
+                            <option key={s.value} value={s.value}>
+                              {language === 'ar' ? s.label_ar : s.label_en}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                          {t.field_project_size}
+                        </label>
+                        <select
+                          name="project_size"
+                          value={formData.project_size}
+                          onChange={handleChange}
+                          className={`w-full border p-3 text-sm rounded-none focus:outline-none ${
+                            isLight ? 'bg-[#F8F5ED] border-black/10 focus:border-luxury-gold-dark text-neutral-900' : 'bg-neutral-950 border-neutral-800 focus:border-luxury-gold text-white'
+                          }`}
+                        >
+                          <option value="">{t.placeholder_select}</option>
+                          {sizeOptions.map(s => (
+                            <option key={s.value} value={s.value}>
+                              {language === 'ar' ? s.label_ar : s.label_en}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                          {t.field_budget_range}
+                        </label>
+                        <select
+                          name="budget_range"
+                          value={formData.budget_range}
+                          onChange={handleChange}
+                          className={`w-full border p-3 text-sm rounded-none focus:outline-none ${
+                            isLight ? 'bg-[#F8F5ED] border-black/10 focus:border-luxury-gold-dark text-neutral-900' : 'bg-neutral-950 border-neutral-800 focus:border-luxury-gold text-white'
+                          }`}
+                        >
+                          <option value="">{t.placeholder_select}</option>
+                          {budgetOptions.map(b => (
+                            <option key={b.value} value={b.value}>
+                              {language === 'ar' ? b.label_ar : b.label_en}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* STEP 3: Timeline & Handover */}
+                {step === 3 && (
+                  <div className="space-y-4 animate-fade-in text-start">
+                    <h3 className="text-sm font-serif font-bold text-luxury-gold-dark uppercase tracking-wider border-b border-black/5 pb-2">
+                      {t.form_contact_preference}
+                    </h3>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                          {t.field_contact_method} <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          name="preferred_contact_method"
+                          value={formData.preferred_contact_method}
+                          onChange={handleChange}
+                          className={`w-full border p-3 text-sm rounded-none focus:outline-none ${
+                            isLight ? 'bg-[#F8F5ED] border-black/10 focus:border-luxury-gold-dark text-neutral-900' : 'bg-neutral-950 border-neutral-800 focus:border-luxury-gold text-white'
+                          }`}
+                          required
+                        >
+                          <option value="">{t.placeholder_select}</option>
+                          <option value="WhatsApp">{language === 'ar' ? "رسالة عبر واتساب" : "WhatsApp Chat"}</option>
+                          <option value="Phone Call">{language === 'ar' ? "اتصال هاتفي مباشر" : "Direct Phone Call"}</option>
+                          <option value="Email">{language === 'ar' ? "بريد إلكتروني رسمي" : "Official Email Support"}</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                          {t.field_visit_date} <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="date"
+                          name="preferred_visit_date"
+                          value={formData.preferred_visit_date}
+                          onChange={handleChange}
+                          className={`w-full border p-3 text-sm rounded-none focus:outline-none font-mono ${
+                            isLight ? 'bg-[#F8F5ED] border-black/10 focus:border-luxury-gold-dark text-neutral-900' : 'bg-neutral-950 border-neutral-800 focus:border-luxury-gold text-white'
+                          }`}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                        {t.field_description}
+                      </label>
+                      <textarea
+                        name="project_description"
+                        value={formData.project_description}
+                        onChange={handleChange}
+                        rows={4}
+                        placeholder={language === 'ar' ? "يرجى ذكر أي تفاصيل تهمك، مثلاً: نوع دهان معين، تكسير حوائط، تمديد جبس ليد مخفي..." : "Enter any specifications, e.g., preferred paint luster, gypsum sheets counts, LED magnetic tracks length..."}
+                        className={`w-full border p-3 text-sm rounded-none focus:outline-none resize-none ${
+                          isLight ? 'bg-[#F8F5ED] border-black/10 focus:border-luxury-gold-dark text-neutral-900' : 'bg-neutral-950 border-neutral-800 focus:border-luxury-gold text-white'
+                        }`}
+                      ></textarea>
+                    </div>
+
+                    {/* Active Upload Images Component */}
+                    <div className="space-y-3 pt-2 text-start">
+                      <label className="block text-xs font-mono text-neutral-500 uppercase tracking-wider font-bold">
+                        {t.field_upload_images}
+                      </label>
+                      
+                      <div
+                        onDragEnter={handleDrag}
+                        onDragOver={handleDrag}
+                        onDragLeave={handleDrag}
+                        onDrop={handleDrop}
+                        onClick={() => document.getElementById('quote-file-picker')?.click()}
+                        className={`border-2 border-dashed p-6 text-center cursor-pointer transition-all ${
+                          isDragActive 
+                            ? 'border-luxury-gold bg-luxury-gold/5' 
+                            : isLight 
+                              ? 'border-black/10 bg-[#F8F5ED] hover:border-luxury-gold/50' 
+                              : 'border-white/10 bg-black/40 hover:border-luxury-gold/40'
+                        }`}
+                      >
+                        <input
+                          type="file"
+                          id="quote-file-picker"
+                          multiple
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
+                        <Upload className="w-8 h-8 text-luxury-gold mx-auto mb-2 animate-bounce" />
+                        <p className="text-xs font-bold">
+                          {language === 'ar' ? "اسحب وأفلت صور حوائطك الحالية هنا أو تصفح" : "Drag & drop photos of your current walls here, or browse"}
+                        </p>
+                        <p className="text-[10px] text-neutral-500 mt-1">
+                          {language === 'ar' ? "يدعم ملفات الصور JPG, PNG حتى 10 ميغابايت" : "Supports image logs JPG, PNG up to 10MB"}
+                        </p>
+                      </div>
+
+                      {/* Display Selected Files with previews and delete button */}
+                      {attachedFiles.length > 0 && (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+                          {attachedFiles.map((file, idx) => (
+                            <div 
+                              key={idx} 
+                              className={`p-2 border flex items-center gap-2 ${
+                                isLight ? 'bg-[#F8F5ED] border-black/5' : 'bg-neutral-950 border-white/5'
+                              }`}
+                            >
+                              <img src={file.preview} alt="Attached Layout" className="w-10 h-10 object-cover shrink-0" />
+                              <div className="min-w-0 flex-1">
+                                <p className="text-[10px] font-bold truncate">{file.name}</p>
+                                <p className="text-[9px] text-neutral-500 font-mono">{file.size}</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeFile(idx);
+                                }}
+                                className="text-red-500 hover:text-red-600 shrink-0 transition-colors"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      <p className="text-[9px] text-neutral-500 font-mono text-center">
+                        {language === 'ar'
+                          ? "/* ملاحظة: سيتم رفع هذه الملفات تلقائياً إلى Supabase Storage buckets بمجرد الترقية */"
+                          : "/* TODO: Connect files list array to Supabase Storage client buckets upon schema sync */"}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step Actions console */}
+                <div className="pt-6 border-t border-black/5 flex items-center justify-between">
+                  {step > 1 ? (
+                    <button
+                      type="button"
+                      onClick={handleBack}
+                      className={`px-5 py-2.5 border text-xs font-bold font-mono flex items-center gap-1.5 transition-all cursor-pointer ${
+                        isLight ? 'bg-[#F8F5ED] border-black/15 text-neutral-800' : 'bg-neutral-950 border-neutral-800 text-neutral-300 hover:text-luxury-gold'
+                      }`}
+                    >
+                      <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
+                      <span>{t.btn_back}</span>
+                    </button>
+                  ) : (
+                    <div></div>
+                  )}
+
+                  {step < 3 ? (
+                    <button
+                      type="button"
+                      onClick={handleNext}
+                      className="px-5 py-2.5 bg-luxury-gold hover:bg-yellow-500 text-neutral-950 text-xs font-bold font-mono flex items-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <span>{t.btn_next}</span>
+                      <ChevronRight className="w-4 h-4 rtl:rotate-180" />
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="px-6 py-3 bg-gradient-to-r from-luxury-gold to-yellow-600 text-neutral-950 font-bold text-xs uppercase flex items-center justify-center gap-2 hover:brightness-110 transition-all cursor-pointer shadow-md"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-neutral-950" />
+                          <span>{language === 'ar' ? "جاري التسجيل..." : "Submitting..."}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 text-neutral-950" />
+                          <span>{language === 'ar' ? "تقديم الطلب النهائي" : "Confirm Quote Request"}</span>
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+
+              </form>
+            </div>
+          )}
+
+        </section>
+
+      </div>
+    </>
   );
 };

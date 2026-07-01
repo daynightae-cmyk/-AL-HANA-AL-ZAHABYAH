@@ -4,19 +4,20 @@ import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { mockServices, mockServicePackages } from '../data/mockData';
 import { Layout, Paintbrush, Sparkles, Wrench, Home, Briefcase, Layers, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { SEOHead } from '../components/common/SEOHead';
 
 export const ServicesPage: React.FC = () => {
   const { language, t } = useApp();
 
   const getIcon = (iconName: string) => {
     switch (iconName) {
-      case 'Layout': return <Layout className="w-10 h-10 text-amber-500" />;
-      case 'Paintbrush': return <Paintbrush className="w-10 h-10 text-amber-500" />;
-      case 'Sparkles': return <Sparkles className="w-10 h-10 text-amber-500" />;
-      case 'Wrench': return <Wrench className="w-10 h-10 text-amber-500" />;
-      case 'Home': return <Home className="w-10 h-10 text-amber-500" />;
-      case 'Briefcase': return <Briefcase className="w-10 h-10 text-amber-500" />;
-      default: return <Layers className="w-10 h-10 text-amber-500" />;
+      case 'Layout': return <Layout className="w-10 h-10 text-luxury-gold" />;
+      case 'Paintbrush': return <Paintbrush className="w-10 h-10 text-luxury-gold" />;
+      case 'Sparkles': return <Sparkles className="w-10 h-10 text-luxury-gold" />;
+      case 'Wrench': return <Wrench className="w-10 h-10 text-luxury-gold" />;
+      case 'Home': return <Home className="w-10 h-10 text-luxury-gold" />;
+      case 'Briefcase': return <Briefcase className="w-10 h-10 text-luxury-gold" />;
+      default: return <Layers className="w-10 h-10 text-luxury-gold" />;
     }
   };
 
@@ -76,13 +77,18 @@ export const ServicesPage: React.FC = () => {
   };
 
   return (
-    <div id="services-page-container" className="pt-24 min-h-screen bg-neutral-950 text-white font-sans">
+    <>
+      <SEOHead
+        title={language === 'ar' ? "خدماتنا وتصاميمنا" : "Our Luxury Services"}
+        description={language === 'ar' ? "استكشف خدماتنا الاحترافية في مجالات التصميم الداخلي، معالجة الرطوبة، تزيين الأسقف بالجبس بورد، والأصباغ الفاخرة." : "Explore our premium line of interior design, Jotun architectural paints, moisture control, and customized gypsum false ceilings in UAE."}
+      />
+      <div id="services-page-container" className="pt-24 min-h-screen bg-neutral-950 text-white font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       
       {/* Header Banner */}
-      <section className="relative py-20 px-4 text-center border-b border-amber-500/10 bg-gradient-to-b from-neutral-950 to-neutral-900">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+      <section className="relative py-20 px-4 text-center border-b border-luxury-gold/10 bg-gradient-to-b from-neutral-950 to-neutral-900">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-luxury-gold/5 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="max-w-4xl mx-auto space-y-4">
-          <span className="text-xs font-mono text-amber-500 font-bold uppercase tracking-widest px-3 py-1 rounded bg-amber-500/5 border border-amber-500/15">
+          <span className="text-xs font-mono text-luxury-gold font-bold uppercase tracking-widest px-3 py-1 rounded bg-luxury-gold/5 border border-luxury-gold/15">
             {language === 'ar' ? "خدماتنا الهندسية والتزيينية" : "Core Professional Catalog"}
           </span>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
@@ -100,15 +106,15 @@ export const ServicesPage: React.FC = () => {
           {mockServices.map((service, idx) => (
             <div
               key={service.id}
-              className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch p-6 sm:p-8 rounded-2xl bg-neutral-900/40 border border-neutral-850 shadow-xl relative overflow-hidden ${
+              className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch p-6 sm:p-8 rounded-none bg-[#0a0a0a] border border-white/5 hover:border-luxury-gold/40 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] transition-all duration-500 relative overflow-hidden ${
                 idx % 2 === 1 ? 'lg:flex-row-reverse' : ''
               }`}
             >
               {/* Backside gold glow */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-bl-full pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-luxury-gold/5 rounded-bl-full pointer-events-none"></div>
 
               {/* Service Graphics (Span 5) */}
-              <div className={`lg:col-span-5 relative min-h-[250px] rounded-xl overflow-hidden ${idx % 2 === 1 ? 'lg:order-last' : ''}`}>
+              <div className={`lg:col-span-5 relative min-h-[250px] rounded-none overflow-hidden ${idx % 2 === 1 ? 'lg:order-last' : ''}`}>
                 <img
                   src={service.image_url}
                   alt={language === 'ar' ? service.name_ar : service.name_en}
@@ -116,9 +122,9 @@ export const ServicesPage: React.FC = () => {
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent"></div>
-                <div className="absolute bottom-4 left-4 flex items-center gap-3 bg-neutral-900/90 backdrop-blur-md px-4 py-2 rounded-lg border border-amber-500/20 shadow-md">
+                <div className="absolute bottom-4 left-4 flex items-center gap-3 bg-neutral-900/90 backdrop-blur-md px-4 py-2 rounded-none border border-luxury-gold/20 shadow-md">
                   {getIcon(service.icon)}
-                  <span className="text-xs font-mono font-bold text-amber-400">
+                  <span className="text-xs font-mono font-bold text-luxury-gold">
                     {language === 'ar' ? `البند ${idx + 1}` : `Item 0${idx + 1}`}
                   </span>
                 </div>
@@ -127,16 +133,16 @@ export const ServicesPage: React.FC = () => {
               {/* Service Descriptions (Span 7) */}
               <div className="lg:col-span-7 flex flex-col justify-between space-y-6 text-start">
                 <div className="space-y-4">
-                  <h2 className="text-xl sm:text-2xl font-bold text-white hover:text-amber-400 transition-colors">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white hover:text-luxury-gold transition-colors font-serif">
                     {language === 'ar' ? service.name_ar : service.name_en}
                   </h2>
-                  <p className="text-sm text-neutral-300 leading-relaxed">
+                  <p className="text-sm text-neutral-300 leading-relaxed font-sans">
                     {language === 'ar' ? service.description_ar : service.description_en}
                   </p>
 
                   {/* inclusions */}
                   <div className="space-y-2">
-                    <h4 className="text-xs font-bold font-mono uppercase tracking-wider text-amber-500">
+                    <h4 className="text-xs font-bold font-mono uppercase tracking-wider text-luxury-gold">
                       {t.services_included_title}
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -150,7 +156,7 @@ export const ServicesPage: React.FC = () => {
                   </div>
 
                   {/* Ideal properties */}
-                  <div className="pt-2 text-xs border-t border-neutral-850">
+                  <div className="pt-2 text-xs border-t border-white/5">
                     <span className="font-bold text-neutral-400 font-mono block mb-1">
                       {t.services_ideal_for}
                     </span>
@@ -161,17 +167,17 @@ export const ServicesPage: React.FC = () => {
                 </div>
 
                 {/* Footer Buttons */}
-                <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t border-neutral-850">
+                <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t border-white/5">
                   <Link
                     to={`/services/${service.slug}`}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded bg-neutral-950 hover:bg-neutral-900 border border-neutral-800 hover:border-amber-500/30 text-amber-400 text-xs font-bold text-center flex items-center justify-center gap-2 transition-all font-mono"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-none bg-neutral-950 hover:bg-neutral-900 border border-white/5 hover:border-luxury-gold/30 text-luxury-gold text-xs font-bold text-center flex items-center justify-center gap-2 transition-all font-mono"
                   >
                     <span>{language === 'ar' ? "تصفح التفاصيل والباقات السعرية" : "View Packages & Estimator"}</span>
                     <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
                   </Link>
                   <Link
                     to="/request-quote"
-                    className="w-full sm:w-auto px-5 py-2.5 rounded bg-gradient-to-r from-amber-500 to-yellow-600 text-neutral-950 text-xs font-bold text-center"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-none bg-luxury-gold text-neutral-950 text-xs font-bold text-center hover:bg-yellow-500 transition-colors uppercase tracking-wider font-serif"
                   >
                     {t.services_request_service}
                   </Link>
@@ -184,5 +190,6 @@ export const ServicesPage: React.FC = () => {
       </section>
 
     </div>
+  </>
   );
 };

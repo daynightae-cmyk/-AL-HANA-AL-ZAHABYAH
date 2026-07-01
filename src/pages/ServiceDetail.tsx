@@ -4,6 +4,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { mockServices, mockServicePackages, mockProjectGallery } from '../data/mockData';
 import { CheckCircle2, ChevronRight, Calendar, Coins, ArrowLeft, Layout, Sparkles, AlertTriangle } from 'lucide-react';
+import { SEOHead } from '../components/common/SEOHead';
 
 export const ServiceDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -40,7 +41,12 @@ export const ServiceDetailPage: React.FC = () => {
   }
 
   return (
-    <div id="service-detail-container" className="pt-24 min-h-screen bg-neutral-950 text-white font-sans">
+    <>
+      <SEOHead
+        title={language === 'ar' ? service.name_ar : service.name_en}
+        description={language === 'ar' ? service.description_ar : service.description_en}
+      />
+      <div id="service-detail-container" className="pt-24 min-h-screen bg-neutral-950 text-white font-sans">
       
       {/* 1. Page Hero */}
       <section className="relative py-20 px-4 text-center border-b border-amber-500/10 overflow-hidden bg-gradient-to-b from-neutral-950 to-neutral-900">
@@ -251,5 +257,6 @@ export const ServiceDetailPage: React.FC = () => {
       </section>
 
     </div>
+  </>
   );
 };

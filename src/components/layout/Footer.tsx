@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
+import { COMPANY, SOCIALS } from '../../lib/constants';
 import {
   Mail,
   MapPin,
@@ -40,57 +41,59 @@ export const Footer: React.FC = () => {
   ];
 
   const socialLinks = [
-    { name: 'Instagram', handle: '@alhanaalzahabyah', url: 'https://instagram.com/alhanaalzahabyah', icon: <Instagram className="w-5 h-5" /> },
-    { name: 'Facebook', handle: 'Al Hana Al Zahabyah', url: 'https://facebook.com/alhanaalzahabyah', icon: <Facebook className="w-5 h-5" /> },
-    { name: 'TikTok', handle: '@alhanaalzahabyah', url: 'https://www.tiktok.com/@alhanaalzahabyah', icon: <span className="text-xs font-bold font-mono">TK</span> },
-    { name: 'Twitter / X', handle: '@AlHanaZahabyah', url: 'https://x.com/AlHanaZahabyah', icon: <span className="text-xs font-bold font-mono">X</span> },
-    { name: 'LinkedIn', handle: 'Al Hana Al Zahabyah', url: 'https://www.linkedin.com/company/alhanaalzahabyah', icon: <Linkedin className="w-5 h-5" /> },
-    { name: 'Snapchat', handle: '@alhanaalzahabyah', url: 'https://www.snapchat.com/add/alhanaalzahabyah', icon: <span className="text-xs font-bold font-mono">SC</span> },
-    { name: 'YouTube', handle: '@AlHanaAlZahabyah', url: 'https://www.youtube.com/@AlHanaAlZahabyah', icon: <Youtube className="w-5 h-5" /> },
-    { name: 'Pinterest', handle: '@alhanaalzahabyah', url: 'https://www.pinterest.com/alhanaalzahabyah', icon: <span className="text-xs font-bold font-mono">PIN</span> }
+    { name: 'Instagram', handle: '@alhanaalzahabyah', url: SOCIALS.instagram, icon: <Instagram className="w-4 h-4" /> },
+    { name: 'TikTok', handle: '@alhanaalzahabyah', url: SOCIALS.tiktok, icon: <span className="text-[10px] font-bold font-mono text-luxury-gold">TK</span> },
+    { name: 'Facebook', handle: 'alhanaalzahabyah', url: SOCIALS.facebook, icon: <Facebook className="w-4 h-4" /> },
+    { name: 'LinkedIn', handle: 'alhanaalzahabyah', url: SOCIALS.linkedin, icon: <Linkedin className="w-4 h-4" /> },
+    { name: 'Twitter / X', handle: '@alhanaalzahabyah', url: SOCIALS.x, icon: <span className="text-[10px] font-bold font-mono text-luxury-gold">X</span> },
+    { name: 'Snapchat', handle: '@alhanaalzahabyah', url: SOCIALS.snapchat, icon: <span className="text-[10px] font-bold font-mono text-luxury-gold">SC</span> },
+    { name: 'Threads', handle: '@alhanaalzahabyah', url: SOCIALS.threads, icon: <span className="text-[10px] font-bold font-mono text-luxury-gold">TH</span> },
+    { name: 'Pinterest', handle: 'alhanaalzahabyah', url: SOCIALS.pinterest, icon: <span className="text-[10px] font-bold font-mono text-luxury-gold">PIN</span> }
   ];
 
   return (
     <footer
       id="main-footer"
-      className="bg-neutral-950 text-neutral-100 border-t border-amber-500/15 pt-16 pb-8 shadow-inner"
+      className="bg-[#050505] text-[#D6D6D6] border-t border-white/10 pt-16 pb-8 shadow-inner"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-neutral-900">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-white/10">
           
           {/* Column 1: Brand Intro (Span 4) */}
           <div className="lg:col-span-4 space-y-4">
-            <div className="flex items-center gap-3">
-              <img
-                src="https://i.postimg.cc/KzbRXw4k/11zon-cropped.png"
-                alt="Al Hana Al Zahabyah Logo"
-                referrerPolicy="no-referrer"
-                className="w-14 h-14 object-contain border border-amber-500/30 rounded-full bg-neutral-900"
-              />
+            <div className="flex items-center gap-3 text-start">
+              <div className="w-12 h-12 rounded-full border border-luxury-gold/30 p-0.5 bg-black/80 flex items-center justify-center shrink-0 overflow-hidden shadow-md">
+                <img
+                  src={COMPANY.logoUrl}
+                  alt={`${COMPANY.name} Logo`}
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-contain filter brightness-110"
+                />
+              </div>
               <div className="flex flex-col text-start">
-                <span className="text-base sm:text-lg font-bold text-amber-400 tracking-wider">
+                <span className="text-sm sm:text-base font-serif font-bold text-luxury-offwhite tracking-wider uppercase">
                   {language === 'ar' ? "الهنا الذهبية" : "AL HANA AL ZAHABYAH"}
                 </span>
-                <span className="text-xs font-mono text-neutral-400">
-                  {language === 'ar' ? "للتصميم وأعمال الديكور" : "Design & Decoration Works"}
+                <span className="text-[9px] tracking-[0.18em] font-mono text-luxury-gold uppercase mt-0.5">
+                  {language === 'ar' ? "للتصميم وأعمال الديكور" : "DESIGN & DECORATION"}
                 </span>
               </div>
             </div>
             
-            <p className="text-sm text-neutral-400 leading-relaxed text-start">
+            <p className="text-xs text-luxury-muted leading-relaxed text-start">
               {t.brand_description}
             </p>
 
             <div className="pt-2 text-start">
               <a
-                href="https://www.alhanaalzahabyah.com"
+                href={`https://${COMPANY.website}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-amber-500 hover:text-amber-400 font-mono"
+                className="inline-flex items-center gap-1.5 text-xs text-luxury-gold hover:text-yellow-500 font-mono"
               >
-                <span>www.alhanaalzahabyah.com</span>
+                <span>{COMPANY.website}</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
             </div>
@@ -98,15 +101,15 @@ export const Footer: React.FC = () => {
 
           {/* Column 2: Services (Span 3) */}
           <div className="lg:col-span-3 space-y-4 text-start">
-            <h3 className="text-sm font-bold text-amber-400 uppercase tracking-widest border-l-2 border-amber-500 pl-2 rtl:border-l-0 rtl:border-r-2 rtl:pr-2">
+            <h3 className="text-xs font-serif font-bold text-luxury-gold uppercase tracking-widest border-l-2 border-luxury-gold pl-2 rtl:border-l-0 rtl:border-r-2 rtl:pr-2">
               {t.footer_services}
             </h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-xs">
               {servicesLinks.map((link) => (
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="text-neutral-400 hover:text-amber-400 transition-colors flex items-center gap-1"
+                    className="text-luxury-muted hover:text-luxury-gold transition-colors flex items-center gap-1"
                   >
                     <span>•</span>
                     <span>{link.label}</span>
@@ -118,15 +121,15 @@ export const Footer: React.FC = () => {
 
           {/* Column 3: Quick Navigation (Span 2) */}
           <div className="lg:col-span-2 space-y-4 text-start">
-            <h3 className="text-sm font-bold text-amber-400 uppercase tracking-widest border-l-2 border-amber-500 pl-2 rtl:border-l-0 rtl:border-r-2 rtl:pr-2">
+            <h3 className="text-xs font-serif font-bold text-luxury-gold uppercase tracking-widest border-l-2 border-luxury-gold pl-2 rtl:border-l-0 rtl:border-r-2 rtl:pr-2">
               {t.footer_quick_links}
             </h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-xs">
               {quickLinks.map((link) => (
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="text-neutral-400 hover:text-amber-400 transition-colors flex items-center gap-1"
+                    className="text-luxury-muted hover:text-luxury-gold transition-colors flex items-center gap-1"
                   >
                     <span>•</span>
                     <span>{link.label}</span>
@@ -138,40 +141,37 @@ export const Footer: React.FC = () => {
 
           {/* Column 4: Contact & Operations (Span 3) */}
           <div className="lg:col-span-3 space-y-4 text-start">
-            <h3 className="text-sm font-bold text-amber-400 uppercase tracking-widest border-l-2 border-amber-500 pl-2 rtl:border-l-0 rtl:border-r-2 rtl:pr-2">
-              {language === 'ar' ? "تواصل وتفاصيل" : "Contact & Support"}
+            <h3 className="text-xs font-serif font-bold text-luxury-gold uppercase tracking-widest border-l-2 border-luxury-gold pl-2 rtl:border-l-0 rtl:border-r-2 rtl:pr-2">
+              {language === 'ar' ? "تواصل وتفاصيل" : "CONTACT & SUPPORT"}
             </h3>
             
-            <ul className="space-y-3 text-sm text-neutral-400">
+            <ul className="space-y-3 text-xs text-luxury-muted">
               <li className="flex items-start gap-2">
-                <MapPin className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-luxury-gold shrink-0 mt-0.5" />
                 <span>{t.address_value}</span>
               </li>
               
               <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-amber-500 shrink-0" />
-                <a href="mailto:admin@alhanaalzahabyah.com" className="hover:text-amber-400 font-mono text-xs">
+                <Mail className="w-4 h-4 text-luxury-gold shrink-0" />
+                <a href="mailto:admin@alhanaalzahabyah.com" className="hover:text-luxury-gold font-mono text-[11px]">
                   admin@alhanaalzahabyah.com
                 </a>
               </li>
-              <li className="flex items-center gap-2 pl-7 rtl:pl-0 rtl:pr-7 text-xs text-neutral-500 font-mono">
+              <li className="flex items-center gap-2 pl-6 rtl:pl-0 rtl:pr-6 text-[10px] text-neutral-500 font-mono">
                 <span>info@alhanaalzahabyah.com</span>
-              </li>
-              <li className="flex items-center gap-2 pl-7 rtl:pl-0 rtl:pr-7 text-xs text-neutral-500 font-mono">
-                <span>sales@alhanaalzahabyah.com</span>
               </li>
 
               <li className="flex items-center gap-2 pt-1">
-                <Phone className="w-4 h-4 text-amber-500 shrink-0" />
-                <span className="font-mono text-xs">{t.phone_label}: +971 50 000 0000</span>
+                <Phone className="w-4 h-4 text-luxury-gold shrink-0" />
+                <span className="font-mono text-[11px]">{t.phone_label}: {COMPANY.phone}</span>
               </li>
             </ul>
 
             <div className="pt-2">
-              <span className="block text-xs text-neutral-500 font-bold uppercase tracking-wider mb-2">
+              <span className="block text-[10px] uppercase tracking-widest text-neutral-500 font-bold mb-2">
                 {t.working_hours_label}
               </span>
-              <span className="text-xs px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800 text-amber-400 font-semibold">
+              <span className="text-[10px] px-2.5 py-1 bg-white/5 border border-white/10 text-luxury-gold font-semibold tracking-wider">
                 {t.working_hours_value}
               </span>
             </div>
@@ -180,9 +180,9 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Social Media Grid */}
-        <div className="py-8 text-start border-b border-neutral-900">
-          <span className="block text-xs font-bold text-amber-400 uppercase tracking-widest mb-4">
-            {t.social_media_label} ({language === 'ar' ? 'القنوات الرسمية' : 'Official Channels'})
+        <div className="py-8 text-start border-b border-white/10">
+          <span className="block text-xs font-serif font-bold text-luxury-gold uppercase tracking-widest mb-4">
+            {t.social_media_label} ({language === 'ar' ? 'القنوات الرسمية' : 'OFFICIAL CHANNELS'})
           </span>
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
             {socialLinks.map((social) => (
@@ -191,13 +191,13 @@ export const Footer: React.FC = () => {
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 p-2 rounded bg-neutral-900 hover:bg-amber-500/10 border border-neutral-800 hover:border-amber-500/30 transition-all group"
+                className="flex items-center gap-2 p-2 bg-[#0d0d0d] hover:bg-luxury-gold/5 border border-white/5 hover:border-luxury-gold/30 transition-all group"
               >
-                <div className="text-amber-500 group-hover:scale-110 transition-transform">
+                <div className="text-luxury-gold group-hover:scale-110 transition-transform">
                   {social.icon}
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="text-[10px] text-neutral-400 font-semibold truncate">
+                  <span className="text-[10px] text-luxury-muted font-semibold truncate uppercase">
                     {social.name}
                   </span>
                   <span className="text-[9px] text-neutral-600 truncate font-mono">
@@ -209,26 +209,35 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Bottom Legal Panel */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
-          <div className="text-center md:text-start">
-            <p>{t.footer_rights}</p>
-            <p className="text-[10px] mt-1 text-neutral-600">
-              {language === 'ar' ? 'تم حجز النطاق والاستضافة على Namecheap بتكلفة 503 درهم.' : 'Domain and hosting registered on Namecheap (503 AED total cost).'}
-            </p>
+        {/* Bottom Legal Panel & Immersive Utility Rail */}
+        <div className="pt-8 flex flex-col lg:flex-row items-center justify-between gap-6 text-[10px] font-medium tracking-[0.15em] uppercase text-luxury-muted">
+          
+          <div className="flex flex-col md:flex-row items-center gap-4 lg:gap-8 text-center md:text-start">
+            <span>INSTAGRAM: @ALHANAALZAHABYAH</span>
+            <span>WHATSAPP: {COMPANY.phone}</span>
+            <div className="flex items-center gap-2 justify-center">
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+              <span>OFFICE OPEN: 9:00 AM - 9:00 PM</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <Link to="/privacy-policy" className="hover:text-amber-500 flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-neutral-600" />
+          <div className="flex items-center gap-4 flex-wrap justify-center">
+            <Link to="/privacy-policy" className="hover:text-luxury-gold flex items-center gap-1">
               <span>{t.privacy_policy_title}</span>
             </Link>
-            <span>|</span>
-            <Link to="/terms" className="hover:text-amber-500 flex items-center gap-1">
-              <FileText className="w-3.5 h-3.5 text-neutral-600" />
+            <span>•</span>
+            <Link to="/terms" className="hover:text-luxury-gold flex items-center gap-1">
               <span>{t.terms_title}</span>
             </Link>
           </div>
+
+        </div>
+
+        <div className="pt-6 border-t border-white/5 mt-6 flex flex-col md:flex-row items-center justify-between text-[10px] text-neutral-600 text-center md:text-start">
+          <p>© 2026 AL HANA AL ZAHABYAH. All rights reserved. Designed & Developed by Sadek Elgazar.</p>
+          <p className="mt-1 md:mt-0 font-mono">
+            {language === 'ar' ? 'تم حجز النطاق والاستضافة على Namecheap بتكلفة 503 درهم.' : 'DOMAIN AND HOSTING ON NAMECHEAP (503 AED).'}
+          </p>
         </div>
 
       </div>
