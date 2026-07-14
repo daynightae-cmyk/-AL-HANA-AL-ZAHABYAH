@@ -13,18 +13,22 @@ export const ProjectsPage: React.FC = () => {
   const [lightboxMode, setLightboxMode] = useState<'main' | 'before' | 'after'>('main');
 
   const categories = [
-    { label_ar: "الكل", label_en: "All", value: "all" },
-    { label_ar: "التصميم", label_en: "Design", value: "home-design" },
-    { label_ar: "الدهانات", label_en: "Paint", value: "home-paint" },
-    { label_ar: "أعمال الديكور", label_en: "Decoration", value: "home-decoration" },
-    { label_ar: "تجديد المنازل", label_en: "Renovations", value: "home-renovation" },
-    { label_ar: "تجديد الفلل", label_en: "Villas", value: "villa-renovation" },
-    { label_ar: "مشاريع تجارية", label_en: "Commercial", value: "commercial-decoration" }
+    { label_ar: "الكل", label_en: "All Projects", value: "all" },
+    { label_ar: "فيلات ومجالس", label_en: "Villas & Majlis", value: "villa" },
+    { label_ar: "شقق سكنية", label_en: "Apartments", value: "apartment" },
+    { label_ar: "مشاريع تجارية ومكاتب", label_en: "Commercial", value: "commercial" },
+    { label_ar: "التصميم ثلاثي الأبعاد", label_en: "3D Design", value: "home-design" },
+    { label_ar: "الدهانات الفاخرة", label_en: "Paints", value: "home-paint" },
+    { label_ar: "أعمال الجبس والديكور", label_en: "Gypsum & Ceilings", value: "home-decoration" }
   ];
 
-  const filteredProjects = filter === 'all'
-    ? mockProjectGallery
-    : mockProjectGallery.filter(p => p.service_type === filter);
+  const filteredProjects = mockProjectGallery.filter(p => {
+    if (filter === 'all') return true;
+    if (filter === 'villa') return p.property_type === 'villa' || p.service_type === 'villa-renovation';
+    if (filter === 'apartment') return p.property_type === 'apartment';
+    if (filter === 'commercial') return p.service_type === 'commercial-decoration' || p.property_type === 'office' || p.property_type === 'salon';
+    return p.service_type === filter;
+  });
 
   const openLightbox = (project: ProjectGallery) => {
     setSelectedProject(project);

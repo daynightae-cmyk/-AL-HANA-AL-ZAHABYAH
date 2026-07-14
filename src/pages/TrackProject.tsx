@@ -190,6 +190,44 @@ export const TrackProjectPage: React.FC = () => {
                   <span>{language === 'ar' ? "الجدول الزمني ومراحل الإنجاز" : "Milestones Progress Indicator"}</span>
                 </h3>
 
+                {/* Visual Progress Bar Component */}
+                {(() => {
+                  const progressPercent = Math.round((project.current_stage_num / 5) * 100);
+                  return (
+                    <div className="space-y-4 p-5 border border-white/5 bg-black/40 rounded-none relative overflow-hidden">
+                      <div className="flex justify-between items-center text-xs font-mono">
+                        <span className="text-neutral-500 uppercase tracking-widest">
+                          {language === 'ar' ? "النسبة العامة للمشروع" : "Overall Execution Weight"}
+                        </span>
+                        <span className="text-luxury-gold font-bold">{progressPercent}% {language === 'ar' ? "مكتمل" : "Completed"}</span>
+                      </div>
+                      
+                      {/* Outer track */}
+                      <div className="h-2 w-full bg-neutral-950 relative rounded-none overflow-hidden border border-white/5">
+                        {/* Inner progress */}
+                        <div 
+                          className="h-full bg-gradient-to-r from-luxury-gold to-yellow-600 transition-all duration-1000 ease-out" 
+                          style={{ width: `${progressPercent}%` }}
+                        />
+                      </div>
+                      
+                      {/* Milestones horizontal node list */}
+                      <div className="grid grid-cols-5 gap-1 pt-1 text-center text-[9px] font-mono text-neutral-500">
+                        {[1, 2, 3, 4, 5].map((stepNum) => (
+                          <div key={stepNum} className="space-y-1">
+                            <div className={`mx-auto w-1.5 h-1.5 rounded-full transition-all duration-500 ${
+                              project.current_stage_num >= stepNum ? 'bg-luxury-gold shadow-[0_0_8px_#D4AF37]' : 'bg-neutral-800'
+                            }`} />
+                            <span className={`block uppercase truncate ${project.current_stage_num >= stepNum ? 'text-luxury-gold font-bold' : ''}`}>
+                              {language === 'ar' ? `المرحلة ${stepNum}` : `Phase ${stepNum}`}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 <div className="space-y-6 relative before:absolute before:top-2 before:bottom-2 before:left-[15px] rtl:before:left-auto rtl:before:right-[15px] before:w-0.5 before:bg-neutral-800">
                   {stages.map((stg) => {
                     const isCompleted = project.current_stage_num > stg.num;
